@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor de Gastos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>💰 Gestor de Gastos</h1>
+
+    <!-- Formulario para agregar gastos -->
+    <form id="formularioGasto">
+        <h3>Agregar nuevo gasto</h3>
+        <input type="text" id="descripcion" placeholder="Descripción" required/>
+        <input type="number" id="monto" placeholder="Monto" required/>
+        <input type="text" id="categoria" placeholder="Categoría" required/>
+        <button type="submit">Agregar Gasto</button>
+    </form>
+
+    <!-- Tabla de gastos -->
+    <h3>Lista de gastos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Descripción</th>
+                <th>Monto</th>
+                <th>Categoría</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody id="tablaGastos">
+        </tbody>
+    </table>
+
+    <script src="script.js"></script>
+</body>
+</html>
