@@ -21,9 +21,15 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
+                .requestMatchers("/api/categorias/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("/api/gastos/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("/api/metas/**").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("/api/abonos/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().permitAll()
-            );
+            )
+            .httpBasic(httpBasic -> {});
         return http.build();
     }
 }
