@@ -22,11 +22,17 @@ public class AbonoMetaService {
     }
 
     public AbonoMeta guardar(AbonoMeta abono) {
-        // Actualizar el monto ahorrado de la meta
-        Meta meta = abono.getMeta();
-        double nuevoMonto = (meta.getMontoAhorrado() == null ? 0 : meta.getMontoAhorrado()) + abono.getMonto();
-        meta.setMontoAhorrado(nuevoMonto);
-        metaRepository.save(meta);
+        // IMPORTANTE: buscar la meta REAL de la BD, no usar la del request
+        Meta metaReal = metaRepository.findById(abono.getMeta().getId()).orElse(null);
+        if (metaReal == null) return null;
+
+        // Actualizar solo el monto ahorrado
+        double montoActual = metaReal.getMontoAhorrado() == null ? 0 : metaReal.getMontoAhorrado();
+        metaReal.setMontoAhorrado(montoActual + abono.getMonto());
+        metaRepository.save(metaReal);
+
+        // Guardar el abono con la meta real
+        abono.setMeta(metaReal);
         return abonoMetaRepository.save(abono);
     }
 

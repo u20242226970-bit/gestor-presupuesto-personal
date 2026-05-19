@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceRank - Metas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark navbar-custom px-4">
+        <span class="navbar-brand fw-bold fs-4">💰 FinanceRank</span>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-white" id="nombreUsuario"></span>
+            <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-box-arrow-right"></i> Salir
+            </button>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-2 sidebar">
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="dashboard.html">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="gastos.html">
+                        <i class="bi bi-wallet2"></i> Gastos
+                    </a>
+                    <a class="nav-link active" href="metas.html">
+                        <i class="bi bi-bullseye"></i> Metas
+                    </a>
+                </nav>
+            </div>
+
+            <!-- CONTENIDO -->
+            <div class="col-lg-10 main-content">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0">🎯 Mis Metas de Ahorro</h4>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMeta">
+                        <i class="bi bi-plus-lg"></i> Nueva Meta
+                    </button>
+                </div>
+
+                <!-- METAS -->
+                <div class="row g-4" id="contenedorMetas">
+                    <div class="col-12 text-center text-muted py-5">
+                        Cargando metas...
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NUEVA META -->
+    <div class="modal fade" id="modalMeta" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Nueva Meta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4">
+                    <div id="alertaMeta" class="alert alert-danger d-none"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nombre de la meta</label>
+                        <input type="text" id="metaNombre" class="form-control" placeholder="Ej: Mi Moto">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Emoji</label>
+                        <input type="text" id="metaEmoji" class="form-control" placeholder="🏍️">
+                        <small class="text-muted">Copia un emoji que represente tu meta</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Precio objetivo</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" id="metaPrecio" class="form-control" placeholder="5000000">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Fecha limite (opcional)</label>
+                        <input type="date" id="metaFecha" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarMeta()">Crear Meta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ABONAR -->
+    <div class="modal fade" id="modalAbono" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Abonar a Meta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4">
+                    <input type="hidden" id="abonoMetaId">
+                    <p class="text-muted" id="abonoMetaNombre"></p>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Monto a abonar</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" id="abonoMonto" class="form-control" placeholder="50000">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Descripcion</label>
+                        <input type="text" id="abonoDescripcion" class="form-control" placeholder="Ahorro semana 1">
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" onclick="guardarAbono()">
+                        <i class="bi bi-piggy-bank"></i> Abonar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        verificarSesion();
+        document.getElementById('nombreUsuario').textContent = '👤 ' + localStorage.getItem('usuarioNombre');
+
+        async function cargarMetas() {
+            const usuarioId = getUsuarioId();
+            const res = await fetch(`${API}/api/metas/usuario/${usuarioId}`, {
+                headers: { 'Authorization': getAuth() }
+            });
+            const metas = await res.json();
+            const contenedor = document.getElementById('contenedorMetas');
+
+            if (metas.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <div style="font-size:80px">🎯</div>
+                        <h5 class="text-muted mt-3">No tienes metas todavia</h5>
+                        <p class="text-muted">Crea tu primera meta de ahorro</p>
+                    </div>`;
+                return;
+            }
+
+            contenedor.innerHTML = metas.map(m => {
+                const porcentaje = m.precioObjetivo > 0
+                    ? Math.min((m.montoAhorrado / m.precioObjetivo) * 100, 100)
+                    : 0;
+                const falta = Math.max(0, m.precioObjetivo - m.montoAhorrado);
+
+                return `
+                <div class="col-lg-4 col-md-6">
+                    <div class="meta-card card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <span style="font-size:30px">${m.emoji || '🎯'}</span>
+                                <span class="fw-bold ms-2">${m.nombre}</span>
+                            </div>
+                            <button class="btn btn-sm btn-danger" onclick="eliminarMeta(${m.id})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small class="text-muted">Progreso</small>
+                                <small class="fw-bold">${porcentaje.toFixed(1)}%</small>
+                            </div>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-primary" style="width: ${porcentaje}%"></div>
+                            </div>
+                            <div class="row text-center mb-3">
+                                <div class="col-6">
+                                    <div class="text-muted small">Ahorrado</div>
+                                    <div class="fw-bold text-success">${formatearMoney(m.montoAhorrado || 0)}</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-muted small">Objetivo</div>
+                                    <div class="fw-bold">${formatearMoney(m.precioObjetivo)}</div>
+                                </div>
+                            </div>
+                            <div class="text-center text-muted small mb-3">
+                                Te falta: <strong class="text-danger">${formatearMoney(falta)}</strong>
+                            </div>
+                            ${m.fechaLimite ? `<div class="text-center text-muted small mb-3">📅 Fecha limite: ${m.fechaLimite}</div>` : ''}
+                            <button class="btn btn-success w-100" onclick="abrirAbono(${m.id}, '${m.nombre}')">
+                                <i class="bi bi-piggy-bank"></i> Abonar
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function guardarMeta() {
+            const nombre = document.getElementById('metaNombre').value;
+            const emoji = document.getElementById('metaEmoji').value;
+            const precioObjetivo = document.getElementById('metaPrecio').value;
+            const fechaLimite = document.getElementById('metaFecha').value;
+
+            if (!nombre || !precioObjetivo) {
+                mostrarError('alertaMeta', 'Completa los campos obligatorios');
+                return;
+            }
+
+            const usuarioId = getUsuarioId();
+            const body = {
+                nombre,
+                emoji: emoji || '🎯',
+                precioObjetivo: parseFloat(precioObjetivo),
+                montoAhorrado: 0,
+                fechaLimite: fechaLimite || null,
+                usuario: { id: parseInt(usuarioId) }
+            };
+
+            const res = await fetch(`${API}/api/metas`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': getAuth()
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalMeta')).hide();
+                cargarMetas();
+            }
+        }
+
+        function abrirAbono(metaId, metaNombre) {
+            document.getElementById('abonoMetaId').value = metaId;
+            document.getElementById('abonoMetaNombre').textContent = 'Meta: ' + metaNombre;
+            new bootstrap.Modal(document.getElementById('modalAbono')).show();
+        }
+
+        async function guardarAbono() {
+            const metaId = document.getElementById('abonoMetaId').value;
+            const monto = document.getElementById('abonoMonto').value;
+            const descripcion = document.getElementById('abonoDescripcion').value;
+
+            if (!monto) return;
+
+            const body = {
+                monto: parseFloat(monto),
+                fecha: new Date().toISOString().split('T')[0],
+                descripcion: descripcion || 'Abono',
+                meta: { id: parseInt(metaId) }
+            };
+
+            const res = await fetch(`${API}/api/abonos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': getAuth()
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalAbono')).hide();
+                document.getElementById('abonoMonto').value = '';
+                document.getElementById('abonoDescripcion').value = '';
+                cargarMetas();
+            }
+        }
+
+        async function eliminarMeta(id) {
+            if (!confirm('Eliminar esta meta?')) return;
+            await fetch(`${API}/api/metas/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': getAuth() }
+            });
+            cargarMetas();
+        }
+
+        cargarMetas();
+    </script>
+</body>
+</html>

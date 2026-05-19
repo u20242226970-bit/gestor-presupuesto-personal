@@ -1,6 +1,7 @@
 package com.universidad.parcial_practica.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
 @Entity
@@ -16,6 +17,7 @@ public class AbonoMeta {
 
     @ManyToOne
     @JoinColumn(name = "meta_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Meta meta;
 
     public Long getId() { return id; }

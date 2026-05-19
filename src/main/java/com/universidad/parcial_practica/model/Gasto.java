@@ -1,13 +1,8 @@
 package com.universidad.parcial_practica.model;
 
+import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Gasto {
@@ -26,6 +21,7 @@ public class Gasto {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Usuario usuario;
 
     public Long getId() { return id; }

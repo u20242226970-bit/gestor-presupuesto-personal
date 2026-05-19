@@ -14,6 +14,8 @@ public class Usuario {
     private String password;
     private String rol;
     private Double ingresoMensual;
+    private Double ahorroMensual;
+    private Integer porcentajeAhorroInicial;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -32,4 +34,10 @@ public class Usuario {
 
     public Double getIngresoMensual() { return ingresoMensual; }
     public void setIngresoMensual(Double ingresoMensual) { this.ingresoMensual = ingresoMensual; }
+
+    public Double getAhorroMensual() { return ahorroMensual; }
+    public void setAhorroMensual(Double ahorroMensual) { this.ahorroMensual = ahorroMensual; }
+
+    public Integer getPorcentajeAhorroInicial() { return porcentajeAhorroInicial; }
+    public void setPorcentajeAhorroInicial(Integer p) { this.porcentajeAhorroInicial = p; }
 }

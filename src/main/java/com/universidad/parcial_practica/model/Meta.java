@@ -1,7 +1,10 @@
 package com.universidad.parcial_practica.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Meta {
@@ -18,7 +21,12 @@ public class Meta {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "meta", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AbonoMeta> abonos;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -30,14 +38,17 @@ public class Meta {
     public void setEmoji(String emoji) { this.emoji = emoji; }
 
     public Double getPrecioObjetivo() { return precioObjetivo; }
-    public void setPrecioObjetivo(Double precioObjetivo) { this.precioObjetivo = precioObjetivo; }
+    public void setPrecioObjetivo(Double p) { this.precioObjetivo = p; }
 
     public Double getMontoAhorrado() { return montoAhorrado; }
-    public void setMontoAhorrado(Double montoAhorrado) { this.montoAhorrado = montoAhorrado; }
+    public void setMontoAhorrado(Double m) { this.montoAhorrado = m; }
 
     public LocalDate getFechaLimite() { return fechaLimite; }
-    public void setFechaLimite(LocalDate fechaLimite) { this.fechaLimite = fechaLimite; }
+    public void setFechaLimite(LocalDate f) { this.fechaLimite = f; }
 
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+
+    public List<AbonoMeta> getAbonos() { return abonos; }
+    public void setAbonos(List<AbonoMeta> abonos) { this.abonos = abonos; }
 }

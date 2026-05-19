@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceRank - Gastos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark navbar-custom px-4">
+        <span class="navbar-brand fw-bold fs-4">💰 FinanceRank</span>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-white" id="nombreUsuario"></span>
+            <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-box-arrow-right"></i> Salir
+            </button>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-2 sidebar">
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="dashboard.html">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a class="nav-link active" href="gastos.html">
+                        <i class="bi bi-wallet2"></i> Gastos
+                    </a>
+                    <a class="nav-link" href="metas.html">
+                        <i class="bi bi-bullseye"></i> Metas
+                    </a>
+                </nav>
+            </div>
+
+            <!-- CONTENIDO -->
+            <div class="col-lg-10 main-content">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0">💳 Mis Gastos</h4>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGasto">
+                        <i class="bi bi-plus-lg"></i> Nuevo Gasto
+                    </button>
+                </div>
+
+                <!-- RESUMEN -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="stat-card orange">
+                            <div class="fs-6 opacity-75">Total Gastado</div>
+                            <div class="fs-3 fw-bold" id="totalGastado">$0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card blue">
+                            <div class="fs-6 opacity-75">Numero de Gastos</div>
+                            <div class="fs-3 fw-bold" id="numGastos">0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card green">
+                            <div class="fs-6 opacity-75">Promedio por Gasto</div>
+                            <div class="fs-3 fw-bold" id="promedioGasto">$0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TABLA -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Descripcion</th>
+                                        <th>Categoria</th>
+                                        <th>Monto</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaGastos">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">
+                                            Cargando gastos...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NUEVO/EDITAR GASTO -->
+    <div class="modal fade" id="modalGasto" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-4">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold" id="modalTitulo">Nuevo Gasto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body px-4">
+                    <input type="hidden" id="gastoId">
+                    <div id="alertaGasto" class="alert alert-danger d-none"></div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Descripcion</label>
+                        <input type="text" id="gastoDescripcion" class="form-control" placeholder="Ej: Almuerzo restaurante">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Monto</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" id="gastoMonto" class="form-control" placeholder="15000">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Categoria</label>
+                        <select id="gastoCategoria" class="form-select">
+                            <option value="">Selecciona una categoria</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Fecha</label>
+                        <input type="date" id="gastoFecha" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarGasto()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        verificarSesion();
+        document.getElementById('nombreUsuario').textContent = '👤 ' + localStorage.getItem('usuarioNombre');
+
+        // Fecha de hoy por defecto
+        document.getElementById('gastoFecha').valueAsDate = new Date();
+
+        async function cargarCategorias() {
+            const res = await fetch(`${API}/api/categorias`, {
+                headers: { 'Authorization': getAuth() }
+            });
+            const categorias = await res.json();
+            const select = document.getElementById('gastoCategoria');
+            categorias.forEach(c => {
+                select.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+            });
+        }
+
+        async function cargarGastos() {
+            const usuarioId = getUsuarioId();
+            const res = await fetch(`${API}/api/gastos/usuario/${usuarioId}`, {
+                headers: { 'Authorization': getAuth() }
+            });
+            const gastos = await res.json();
+
+            const total = gastos.reduce((sum, g) => sum + g.monto, 0);
+            document.getElementById('totalGastado').textContent = formatearMoney(total);
+            document.getElementById('numGastos').textContent = gastos.length;
+            document.getElementById('promedioGasto').textContent = gastos.length > 0 ? formatearMoney(total / gastos.length) : '$0';
+
+            const tabla = document.getElementById('tablaGastos');
+            if (gastos.length === 0) {
+                tabla.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No tienes gastos registrados</td></tr>';
+                return;
+            }
+
+            tabla.innerHTML = gastos.reverse().map((g, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${g.descripcion}</td>
+                    <td><span class="badge bg-primary">${g.categoria ? g.categoria.nombre : 'Sin categoria'}</span></td>
+                    <td class="fw-bold text-danger">${formatearMoney(g.monto)}</td>
+                    <td>${g.fecha || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editarGasto(${g.id}, '${g.descripcion}', ${g.monto}, ${g.categoria ? g.categoria.id : ''}, '${g.fecha}')">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="eliminarGasto(${g.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function guardarGasto() {
+            const id = document.getElementById('gastoId').value;
+            const descripcion = document.getElementById('gastoDescripcion').value;
+            const monto = document.getElementById('gastoMonto').value;
+            const categoriaId = document.getElementById('gastoCategoria').value;
+            const fecha = document.getElementById('gastoFecha').value;
+
+            if (!descripcion || !monto || !fecha) {
+                mostrarError('alertaGasto', 'Completa todos los campos');
+                return;
+            }
+
+            const usuarioId = getUsuarioId();
+            const body = {
+                descripcion,
+                monto: parseFloat(monto),
+                fecha,
+                categoria: categoriaId ? { id: parseInt(categoriaId) } : null,
+                usuario: { id: parseInt(usuarioId) }
+            };
+
+            const url = id ? `${API}/api/gastos/${id}` : `${API}/api/gastos`;
+            const method = id ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': getAuth()
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modalGasto')).hide();
+                limpiarModal();
+                cargarGastos();
+            }
+        }
+
+        function editarGasto(id, descripcion, monto, categoriaId, fecha) {
+            document.getElementById('modalTitulo').textContent = 'Editar Gasto';
+            document.getElementById('gastoId').value = id;
+            document.getElementById('gastoDescripcion').value = descripcion;
+            document.getElementById('gastoMonto').value = monto;
+            document.getElementById('gastoCategoria').value = categoriaId;
+            document.getElementById('gastoFecha').value = fecha;
+            new bootstrap.Modal(document.getElementById('modalGasto')).show();
+        }
+
+        async function eliminarGasto(id) {
+            if (!confirm('Eliminar este gasto?')) return;
+            await fetch(`${API}/api/gastos/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': getAuth() }
+            });
+            cargarGastos();
+        }
+
+        function limpiarModal() {
+            document.getElementById('gastoId').value = '';
+            document.getElementById('gastoDescripcion').value = '';
+            document.getElementById('gastoMonto').value = '';
+            document.getElementById('gastoFecha').valueAsDate = new Date();
+            document.getElementById('modalTitulo').textContent = 'Nuevo Gasto';
+        }
+
+        cargarCategorias();
+        cargarGastos();
+    </script>
+</body>
+</html>
