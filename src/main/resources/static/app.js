@@ -66,21 +66,32 @@ async function registrar() {
     const password = document.getElementById('password').value;
     const ingresoMensual = document.getElementById('ingresoMensual').value;
 
-    if (!nombre || !username || !password || !ingresoMensual) {
-        mostrarError('alertaError', 'Completa todos los campos');
+    if (porcentajeElegido === 0) {
+        mostrarError('alertaError', 'Selecciona tu porcentaje de ahorro actual');
+        document.getElementById('alertaError').classList.remove('d-none');
         return;
     }
+
+    const ahorroMensual = (parseFloat(ingresoMensual) * porcentajeElegido) / 100;
 
     try {
         const response = await fetch(`${API}/api/auth/registro`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre, username, password, ingresoMensual, rol: 'USER' })
+            body: JSON.stringify({
+                nombre,
+                username,
+                password,
+                ingresoMensual: parseFloat(ingresoMensual),
+                ahorroMensual,
+                porcentajeAhorroInicial: porcentajeElegido,
+                rol: 'USER'
+            })
         });
 
         if (response.ok) {
             document.getElementById('alertaExito').classList.remove('d-none');
-            document.getElementById('alertaExito').textContent = 'Cuenta creada! Redirigiendo...';
+            document.getElementById('alertaExito').textContent = 'Cuenta creada exitosamente! Redirigiendo...';
             setTimeout(() => window.location.href = 'index.html', 2000);
         } else {
             mostrarError('alertaError', 'Error al crear la cuenta');
@@ -123,7 +134,17 @@ function formatearMoney(valor) {
         minimumFractionDigits: 0
     }).format(valor);
 }
+function calcularRango(ingresoMensual, ahorroMensual) {
+    if (!ingresoMensual || ingresoMensual === 0) return getRangoInfo('piedra');
+    const porcentaje = (ahorroMensual / ingresoMensual) * 100;
 
+    if (porcentaje >= 45) return getRangoInfo('elite');
+    if (porcentaje >= 30) return getRangoInfo('diamante');
+    if (porcentaje >= 20) return getRangoInfo('oro');
+    if (porcentaje >= 10) return getRangoInfo('plata');
+    if (porcentaje >= 5)  return getRangoInfo('bronce');
+    return getRangoInfo('piedra');
+}
 // ===== UTILIDADES =====
 
 function mostrarError(id, mensaje) {

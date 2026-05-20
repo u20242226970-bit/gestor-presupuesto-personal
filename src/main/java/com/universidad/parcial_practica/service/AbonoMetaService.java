@@ -22,7 +22,7 @@ public class AbonoMetaService {
     }
 
     public AbonoMeta guardar(AbonoMeta abono) {
-        // IMPORTANTE: buscar la meta REAL de la BD, no usar la del request
+        // buscar la meta REAL de la BD, no usar la del request
         Meta metaReal = metaRepository.findById(abono.getMeta().getId()).orElse(null);
         if (metaReal == null) return null;
 

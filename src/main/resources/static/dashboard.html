@@ -36,6 +36,12 @@
                     <a class="nav-link" href="metas.html">
                         <i class="bi bi-bullseye"></i> Metas
                     </a>
+                    <a class="nav-link" href="perfil.html">
+                        <i class="bi bi-person-circle"></i> Perfil
+                    </a>
+                    <a class="nav-link" href="leaderboard.html">
+                        <i class="bi bi-trophy"></i> Ranking
+                    </a>
                 </nav>
             </div>
 
@@ -77,7 +83,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="stat-card green">
-                                    <div class="fs-6 opacity-75">Total Ahorrado</div>
+                                    <div class="fs-6 opacity-75">Ahorro Mensual</div>
                                     <div class="fs-3 fw-bold" id="statAhorrado">$0</div>
                                     <i class="bi bi-piggy-bank fs-1 opacity-25"></i>
                                 </div>
@@ -93,11 +99,41 @@
                     </div>
                 </div>
 
+                <!-- ACTUALIZAR FINANZAS -->
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">💰 Actualizar mis Finanzas</h5>
+                        <p class="text-muted">Mantén tu información actualizada para un rango preciso</p>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Ingreso mensual</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" id="nuevoIngreso" class="form-control" placeholder="2000000">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Ahorro mensual</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" id="nuevoAhorro" class="form-control" placeholder="300000">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button onclick="actualizarFinanzas()" class="btn btn-primary w-100 py-2">
+                                    <i class="bi bi-arrow-up-circle"></i> Actualizar
+                                </button>
+                            </div>
+                        </div>
+                        <div id="mensajeAhorro" class="alert d-none mt-3 mb-0 py-2"></div>
+                    </div>
+                </div>
+
                 <!-- TODOS LOS RANGOS -->
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
                         <h5 class="fw-bold mb-4">🏆 Sistema de Rangos</h5>
-                        <div class="row g-3" id="todosLosRangos">
+                        <div class="row g-3">
                             <div class="col-md-2 col-4 text-center">
                                 <div class="p-3 rounded-3 rank-piedra text-white">
                                     <div style="font-size:40px">🪨</div>
@@ -187,15 +223,16 @@
             const nombre = localStorage.getItem('usuarioNombre');
             document.getElementById('nombreUsuario').textContent = '👤 ' + nombre;
 
-            // Cargar usuario
             const resUsuario = await fetch(`${API}/api/usuarios/me`, {
                 headers: { 'Authorization': getAuth() }
             });
             const usuario = await resUsuario.json();
             const ingreso = usuario.ingresoMensual || 0;
-            document.getElementById('statIngreso').textContent = formatearMoney(ingreso);
+            const ahorroMensual = usuario.ahorroMensual || 0;
 
-            // Cargar gastos
+            document.getElementById('statIngreso').textContent = formatearMoney(ingreso);
+            document.getElementById('statAhorrado').textContent = formatearMoney(ahorroMensual);
+
             const resGastos = await fetch(`${API}/api/gastos/usuario/${usuarioId}`, {
                 headers: { 'Authorization': getAuth() }
             });
@@ -203,37 +240,32 @@
             const totalGastado = gastos.reduce((sum, g) => sum + g.monto, 0);
             document.getElementById('statGastado').textContent = formatearMoney(totalGastado);
 
-            // Calcular ahorro
-            const totalAhorrado = Math.max(0, ingreso - totalGastado);
-            document.getElementById('statAhorrado').textContent = formatearMoney(totalAhorrado);
-
-            // Cargar metas
             const resMetas = await fetch(`${API}/api/metas/usuario/${usuarioId}`, {
                 headers: { 'Authorization': getAuth() }
             });
             const metas = await resMetas.json();
             document.getElementById('statMetas').textContent = metas.length;
 
-            // Calcular y mostrar rango
-            const porcentaje = ingreso > 0 ? (totalAhorrado / ingreso) * 100 : 0;
-            const rango = calcularRango(ingreso, totalAhorrado);
+            const porcentaje = ingreso > 0 ? (ahorroMensual / ingreso) * 100 : 0;
+            const rango = calcularRango(ingreso, ahorroMensual);
             const rangoContainer = document.getElementById('rangoContainer');
             rangoContainer.className = `rank-container ${rango.clase}`;
             document.getElementById('rangoEmoji').textContent = rango.emoji;
             document.getElementById('rangoNombre').textContent = rango.nombre;
             document.getElementById('rangoPorcentaje').textContent = porcentaje.toFixed(1) + '% del ingreso ahorrado';
-            const progreso = rango.max > 0 ? ((porcentaje - rango.min) / (rango.max - rango.min)) * 100 : 100;
-            document.getElementById('rangoProgressBar').style.width = Math.min(progreso, 100) + '%';
+            const progreso = rango.max > rango.min
+                ? ((porcentaje - rango.min) / (rango.max - rango.min)) * 100
+                : 100;
+            document.getElementById('rangoProgressBar').style.width = Math.min(Math.max(progreso, 0), 100) + '%';
             if (rango.siguiente) {
                 document.getElementById('rangoSiguiente').textContent = `Siguiente: ${rango.siguiente} (${rango.max}%)`;
             } else {
-                document.getElementById('rangoSiguiente').textContent = '¡Rango maximo alcanzado!';
+                document.getElementById('rangoSiguiente').textContent = '¡Rango maximo alcanzado! 👑';
             }
 
-            // Ultimos 5 gastos
             const tabla = document.getElementById('tablaUltimosGastos');
             if (gastos.length === 0) {
-                tabla.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No hay gastos registrados</td></tr>';
+                tabla.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">No hay gastos registrados aun</td></tr>';
             } else {
                 tabla.innerHTML = gastos.slice(-5).reverse().map(g => `
                     <tr>
@@ -243,6 +275,43 @@
                         <td>${g.fecha || '-'}</td>
                     </tr>
                 `).join('');
+            }
+        }
+
+        async function actualizarFinanzas() {
+            const nuevoAhorro = document.getElementById('nuevoAhorro').value;
+            const nuevoIngreso = document.getElementById('nuevoIngreso').value;
+            const msg = document.getElementById('mensajeAhorro');
+
+            if (!nuevoAhorro && !nuevoIngreso) {
+                msg.classList.remove('d-none', 'alert-success');
+                msg.classList.add('alert-danger');
+                msg.textContent = 'Ingresa al menos un valor para actualizar';
+                return;
+            }
+
+            const usuarioId = getUsuarioId();
+            const body = {};
+            if (nuevoAhorro) body.ahorroMensual = parseFloat(nuevoAhorro);
+            if (nuevoIngreso) body.ingresoMensual = parseFloat(nuevoIngreso);
+
+            const res = await fetch(`${API}/api/usuarios/${usuarioId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': getAuth()
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                msg.classList.remove('d-none', 'alert-danger');
+                msg.classList.add('alert-success');
+                msg.textContent = '✅ Finanzas actualizadas y rango recalculado!';
+                setTimeout(() => msg.classList.add('d-none'), 3000);
+                document.getElementById('nuevoAhorro').value = '';
+                document.getElementById('nuevoIngreso').value = '';
+                cargarDashboard();
             }
         }
 

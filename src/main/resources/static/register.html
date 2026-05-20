@@ -10,7 +10,7 @@
 </head>
 <body class="login-body">
 
-    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center py-5">
         <div class="row w-100 justify-content-center">
             <div class="col-lg-5">
                 <div class="login-card p-5">
@@ -21,45 +21,107 @@
                     <div id="alertaError" class="alert alert-danger d-none"></div>
                     <div id="alertaExito" class="alert alert-success d-none"></div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Nombre completo</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <input type="text" id="nombre" class="form-control" placeholder="Luis Felipe Saldarriaga">
+                    <!-- PASO 1 -->
+                    <div id="paso1">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nombre completo</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                <input type="text" id="nombre" class="form-control" placeholder="Luis Felipe Saldarriaga">
+                            </div>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Usuario</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-at"></i></span>
+                                <input type="text" id="username" class="form-control" placeholder="luisfelipe123">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Contrasena</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" id="password" class="form-control" placeholder="Minimo 6 caracteres">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Ingreso mensual</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                <input type="number" id="ingresoMensual" class="form-control" placeholder="2000000">
+                            </div>
+                        </div>
+                        <button onclick="irPaso2()" class="btn btn-primary w-100 py-2 fw-bold">
+                            Siguiente <i class="bi bi-arrow-right"></i>
+                        </button>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Usuario</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-at"></i></span>
-                            <input type="text" id="username" class="form-control" placeholder="luisfelipe123">
+                    <!-- PASO 2 -->
+                    <div id="paso2" class="d-none">
+                        <div class="text-center mb-4">
+                            <div style="font-size:50px">💰</div>
+                            <h5 class="fw-bold">Una pregunta importante</h5>
+                            <p class="text-muted">¿Que porcentaje de tu ingreso ahorras actualmente?</p>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-6">
+                                <div class="rango-opcion" onclick="seleccionarPorcentaje(this, 2, 'piedra')" data-valor="2">
+                                    <div class="fs-1">🪨</div>
+                                    <div class="fw-bold">0% - 4%</div>
+                                    <small class="text-muted">Piedra</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rango-opcion" onclick="seleccionarPorcentaje(this, 7, 'bronce')" data-valor="7">
+                                    <div class="fs-1">🥉</div>
+                                    <div class="fw-bold">5% - 9%</div>
+                                    <small class="text-muted">Bronce</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rango-opcion" onclick="seleccionarPorcentaje(this, 15, 'plata')" data-valor="15">
+                                    <div class="fs-1">🥈</div>
+                                    <div class="fw-bold">10% - 19%</div>
+                                    <small class="text-muted">Plata</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rango-opcion" onclick="seleccionarPorcentaje(this, 25, 'oro')" data-valor="25">
+                                    <div class="fs-1">🥇</div>
+                                    <div class="fw-bold">20% - 29%</div>
+                                    <small class="text-muted">Oro</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rango-opcion" onclick="seleccionarPorcentaje(this, 37, 'diamante')" data-valor="37">
+                                    <div class="fs-1">💎</div>
+                                    <div class="fw-bold">30% - 44%</div>
+                                    <small class="text-muted">Diamante</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rango-opcion" onclick="seleccionarPorcentaje(this, 50, 'elite')" data-valor="50">
+                                    <div class="fs-1">👑</div>
+                                    <div class="fw-bold">45%+</div>
+                                    <small class="text-muted">Elite</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="porcentajeSeleccionado" value="">
+
+                        <div class="d-flex gap-2">
+                            <button onclick="irPaso1()" class="btn btn-outline-secondary w-50 py-2">
+                                <i class="bi bi-arrow-left"></i> Atras
+                            </button>
+                            <button onclick="registrar()" class="btn btn-primary w-50 py-2 fw-bold">
+                                Crear cuenta
+                            </button>
                         </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Contrasena</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                            <input type="password" id="password" class="form-control" placeholder="Minimo 6 caracteres">
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Ingreso mensual</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
-                            <input type="number" id="ingresoMensual" class="form-control" placeholder="2000000">
-                        </div>
-                        <small class="text-muted">Este valor se usa para calcular tu rango de ahorro</small>
-                    </div>
-
-                    <button onclick="registrar()" class="btn btn-primary w-100 py-2 fw-bold fs-5">
-                        Crear cuenta
-                    </button>
 
                     <hr class="my-4">
-
                     <p class="text-center text-muted">
                         Ya tienes cuenta?
                         <a href="index.html" class="text-primary fw-bold">Inicia sesion</a>
@@ -72,5 +134,35 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
+    <script>
+        let porcentajeElegido = 0;
+
+        function irPaso2() {
+            const nombre = document.getElementById('nombre').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const ingreso = document.getElementById('ingresoMensual').value;
+
+            if (!nombre || !username || !password || !ingreso) {
+                mostrarError('alertaError', 'Completa todos los campos');
+                return;
+            }
+
+            document.getElementById('alertaError').classList.add('d-none');
+            document.getElementById('paso1').classList.add('d-none');
+            document.getElementById('paso2').classList.remove('d-none');
+        }
+
+        function irPaso1() {
+            document.getElementById('paso2').classList.add('d-none');
+            document.getElementById('paso1').classList.remove('d-none');
+        }
+
+        function seleccionarPorcentaje(el, valor, rango) {
+            document.querySelectorAll('.rango-opcion').forEach(o => o.classList.remove('seleccionado'));
+            el.classList.add('seleccionado');
+            porcentajeElegido = valor;
+        }
+    </script>
 </body>
 </html>

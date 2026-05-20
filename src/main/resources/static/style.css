@@ -399,3 +399,24 @@ body {
     .rank-icon { font-size: 55px; }
     .stat-card { min-height: 100px; }
 }
+/* ===== REGISTRO PASO 2 ===== */
+.rango-opcion {
+    border: 2px solid #eee;
+    border-radius: 16px;
+    padding: 15px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.rango-opcion:hover {
+    border-color: var(--primary);
+    background: var(--light-bg);
+    transform: translateY(-3px);
+}
+
+.rango-opcion.seleccionado {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, #4361EE20, #7209B720);
+    box-shadow: 0 5px 15px rgba(67,97,238,0.2);
+}

@@ -31,8 +31,9 @@ public class UsuarioController {
     public Usuario actualizar(@PathVariable Long id, @RequestBody Usuario nuevo) {
         Usuario existente = usuarioRepository.findById(id).orElse(null);
         if (existente != null) {
-            existente.setNombre(nuevo.getNombre());
-            existente.setIngresoMensual(nuevo.getIngresoMensual());
+            if (nuevo.getNombre() != null) existente.setNombre(nuevo.getNombre());
+            if (nuevo.getIngresoMensual() != null) existente.setIngresoMensual(nuevo.getIngresoMensual());
+            if (nuevo.getAhorroMensual() != null) existente.setAhorroMensual(nuevo.getAhorroMensual());
             return usuarioRepository.save(existente);
         }
         return null;
