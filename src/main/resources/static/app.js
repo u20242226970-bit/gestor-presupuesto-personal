@@ -1,20 +1,26 @@
 // URL base de la API
 const API = 'http://localhost:8080';
 
-// ===== AUTENTICACION =====
+// ===== AUTENTICACION (JWT) =====
 
+/**
+ * Devuelve el header de autorizacion con el token JWT.
+ * Reemplaza al antiguo Basic Auth.
+ */
 function getAuth() {
-    const username = localStorage.getItem('username');
-    const password = localStorage.getItem('password');
-    return 'Basic ' + btoa(username + ':' + password);
+    const token = localStorage.getItem('token');
+    return 'Bearer ' + token;
 }
 
 function getUsuarioId() {
     return localStorage.getItem('usuarioId');
 }
 
+/**
+ * Verifica que exista un token. Si no, redirige al login.
+ */
 function verificarSesion() {
-    if (!localStorage.getItem('username')) {
+    if (!localStorage.getItem('token')) {
         window.location.href = 'index.html';
     }
 }
@@ -24,7 +30,7 @@ function cerrarSesion() {
     window.location.href = 'index.html';
 }
 
-// ===== LOGIN =====
+// ===== LOGIN (JWT) =====
 
 async function login() {
     const username = document.getElementById('username').value;
@@ -36,19 +42,19 @@ async function login() {
     }
 
     try {
-        const response = await fetch(`${API}/api/usuarios/me`, {
-            headers: {
-                'Authorization': 'Basic ' + btoa(username + ':' + password)
-            }
+        const response = await fetch(`${API}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
         });
 
         if (response.ok) {
-            const usuario = await response.json();
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', password);
-            localStorage.setItem('usuarioId', usuario.id);
-            localStorage.setItem('usuarioNombre', usuario.nombre);
-            localStorage.setItem('usuarioRol', usuario.rol);
+            const data = await response.json();
+            // Guardamos el token y los datos del usuario (NUNCA la contrasena)
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('usuarioId', data.idUsuario);
+            localStorage.setItem('usuarioNombre', data.nombre);
+            localStorage.setItem('usuarioRol', data.rol);
             window.location.href = 'dashboard.html';
         } else {
             mostrarError('alertaError', 'Usuario o contrasena incorrectos');
@@ -58,7 +64,7 @@ async function login() {
     }
 }
 
-// ===== REGISTRO =====
+// ===== REGISTRO (JWT) =====
 
 async function registrar() {
     const nombre = document.getElementById('nombre').value;
@@ -90,9 +96,16 @@ async function registrar() {
         });
 
         if (response.ok) {
+            // El registro ahora devuelve un token: logueamos automaticamente
+            const data = await response.json();
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('usuarioId', data.idUsuario);
+            localStorage.setItem('usuarioNombre', data.nombre);
+            localStorage.setItem('usuarioRol', data.rol);
+
             document.getElementById('alertaExito').classList.remove('d-none');
             document.getElementById('alertaExito').textContent = 'Cuenta creada exitosamente! Redirigiendo...';
-            setTimeout(() => window.location.href = 'index.html', 2000);
+            setTimeout(() => window.location.href = 'dashboard.html', 1500);
         } else {
             mostrarError('alertaError', 'Error al crear la cuenta');
         }
@@ -103,9 +116,9 @@ async function registrar() {
 
 // ===== SISTEMA DE RANGOS =====
 
-function calcularRango(ingresoMensual, totalAhorrado) {
+function calcularRango(ingresoMensual, ahorroMensual) {
     if (!ingresoMensual || ingresoMensual === 0) return getRangoInfo('piedra');
-    const porcentaje = (totalAhorrado / ingresoMensual) * 100;
+    const porcentaje = (ahorroMensual / ingresoMensual) * 100;
 
     if (porcentaje >= 45) return getRangoInfo('elite');
     if (porcentaje >= 30) return getRangoInfo('diamante');
@@ -134,17 +147,7 @@ function formatearMoney(valor) {
         minimumFractionDigits: 0
     }).format(valor);
 }
-function calcularRango(ingresoMensual, ahorroMensual) {
-    if (!ingresoMensual || ingresoMensual === 0) return getRangoInfo('piedra');
-    const porcentaje = (ahorroMensual / ingresoMensual) * 100;
 
-    if (porcentaje >= 45) return getRangoInfo('elite');
-    if (porcentaje >= 30) return getRangoInfo('diamante');
-    if (porcentaje >= 20) return getRangoInfo('oro');
-    if (porcentaje >= 10) return getRangoInfo('plata');
-    if (porcentaje >= 5)  return getRangoInfo('bronce');
-    return getRangoInfo('piedra');
-}
 // ===== UTILIDADES =====
 
 function mostrarError(id, mensaje) {
