@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceRank - Perfil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-dark navbar-custom px-4">
+        <span class="navbar-brand fw-bold fs-4">💰 FinanceRank</span>
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-white" id="nombreUsuario"></span>
+            <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-box-arrow-right"></i> Salir
+            </button>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-2 sidebar">
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> Gastos</a>
+                    <a class="nav-link" href="metas.html"><i class="bi bi-bullseye"></i> Metas</a>
+                    <a class="nav-link active" href="perfil.html"><i class="bi bi-person-circle"></i> Perfil</a>
+                    <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> Ranking</a>
+                </nav>
+            </div>
+
+            <!-- CONTENIDO -->
+            <div class="col-lg-10 main-content">
+                <h4 class="fw-bold mb-4">Mi Perfil</h4>
+
+                <div class="row">
+                    <!-- Tarjeta de rango -->
+                    <div class="col-lg-4">
+                        <div id="rangoContainer" class="rank-container rank-piedra">
+                            <div class="rank-icon" id="rangoEmoji">🪨</div>
+                            <div class="rank-name" id="rangoNombre">PIEDRA</div>
+                            <div class="text-white-50 mb-2" id="rangoPorcentaje">0% del ingreso ahorrado</div>
+                            <div class="rank-progress">
+                                <div class="rank-progress-bar" id="rangoProgressBar" style="width: 0%"></div>
+                            </div>
+                            <small class="text-white-50" id="rangoSiguiente"></small>
+                        </div>
+                    </div>
+
+                    <!-- Datos + edicion -->
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold mb-3">👤 Datos de la cuenta</h5>
+                                <div class="row mb-2">
+                                    <div class="col-4 text-muted">Usuario</div>
+                                    <div class="col-8 fw-semibold" id="infoUsername">-</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4 text-muted">Rol</div>
+                                    <div class="col-8"><span class="badge bg-primary" id="infoRol">-</span></div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4 text-muted">Ingreso mensual</div>
+                                    <div class="col-8 fw-semibold text-success" id="infoIngreso">-</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 text-muted">Ahorro mensual</div>
+                                    <div class="col-8 fw-semibold text-success" id="infoAhorro">-</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold mb-3">✏️ Editar perfil</h5>
+                                <div id="mensajePerfil" class="alert d-none"></div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Nombre completo</label>
+                                    <input type="text" id="editNombre" class="form-control">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Ingreso mensual</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" id="editIngreso" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Ahorro mensual</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" id="editAhorro" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onclick="guardarPerfil()" class="btn btn-primary fw-bold">
+                                    <i class="bi bi-check-lg"></i> Guardar cambios
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        verificarSesion();
+
+        let usuarioActual = null;
+
+        async function cargarPerfil() {
+            document.getElementById('nombreUsuario').textContent = '👤 ' + localStorage.getItem('usuarioNombre');
+
+            const res = await fetch(`${API}/api/usuarios/me`, {
+                headers: { 'Authorization': getAuth() }
+            });
+            usuarioActual = await res.json();
+
+            document.getElementById('infoUsername').textContent = usuarioActual.username;
+            document.getElementById('infoRol').textContent = usuarioActual.rol;
+            document.getElementById('infoIngreso').textContent = formatearMoney(usuarioActual.ingresoMensual || 0);
+            document.getElementById('infoAhorro').textContent = formatearMoney(usuarioActual.ahorroMensual || 0);
+
+            document.getElementById('editNombre').value = usuarioActual.nombre || '';
+            document.getElementById('editIngreso').value = usuarioActual.ingresoMensual || '';
+            document.getElementById('editAhorro').value = usuarioActual.ahorroMensual || '';
+
+            const ingreso = usuarioActual.ingresoMensual || 0;
+            const ahorro = usuarioActual.ahorroMensual || 0;
+            const porcentaje = ingreso > 0 ? (ahorro / ingreso) * 100 : 0;
+            const rango = calcularRango(ingreso, ahorro);
+            document.getElementById('rangoContainer').className = `rank-container ${rango.clase}`;
+            document.getElementById('rangoEmoji').textContent = rango.emoji;
+            document.getElementById('rangoNombre').textContent = rango.nombre;
+            document.getElementById('rangoPorcentaje').textContent = porcentaje.toFixed(1) + '% del ingreso ahorrado';
+            const progreso = rango.max > rango.min ? ((porcentaje - rango.min) / (rango.max - rango.min)) * 100 : 100;
+            document.getElementById('rangoProgressBar').style.width = Math.min(Math.max(progreso, 0), 100) + '%';
+            document.getElementById('rangoSiguiente').textContent = rango.siguiente ? `Siguiente: ${rango.siguiente} (${rango.max}%)` : '¡Rango maximo alcanzado! 👑';
+        }
+
+        async function guardarPerfil() {
+            const msg = document.getElementById('mensajePerfil');
+            const body = {
+                nombre: document.getElementById('editNombre').value,
+                ingresoMensual: parseFloat(document.getElementById('editIngreso').value) || 0,
+                ahorroMensual: parseFloat(document.getElementById('editAhorro').value) || 0
+            };
+
+            const res = await fetch(`${API}/api/usuarios/${usuarioActual.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': getAuth() },
+                body: JSON.stringify(body)
+            });
+
+            if (res.ok) {
+                msg.className = 'alert alert-success';
+                msg.textContent = '✅ Perfil actualizado correctamente';
+                localStorage.setItem('usuarioNombre', body.nombre);
+                cargarPerfil();
+                setTimeout(() => msg.classList.add('d-none'), 3000);
+            } else {
+                msg.className = 'alert alert-danger';
+                msg.textContent = 'Error al actualizar el perfil';
+            }
+        }
+
+        cargarPerfil();
+    </script>
+</body>
+</html>
