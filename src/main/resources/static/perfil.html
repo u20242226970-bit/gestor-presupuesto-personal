@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinanceRank - Perfil</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
@@ -12,7 +13,7 @@
 
     <!-- NAVBAR -->
     <nav class="navbar navbar-dark navbar-custom px-4">
-        <span class="navbar-brand fw-bold fs-4">💰 FinanceRank</span>
+        <span class="navbar-brand fw-bold fs-4"><i class="bi bi-piggy-bank-fill"></i> FinanceRank</span>
         <div class="d-flex align-items-center gap-3">
             <span class="text-white" id="nombreUsuario"></span>
             <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
@@ -112,6 +113,8 @@
         </div>
     </div>
 
+    <!-- jQuery (antes de app.js) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
     <script>
@@ -119,59 +122,50 @@
 
         let usuarioActual = null;
 
+        // Carga los datos del perfil del usuario (peticion con jQuery)
         async function cargarPerfil() {
-        	document.getElementById('nombreUsuario').innerHTML = '<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre');
+            $('#nombreUsuario').html('<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre'));
 
-            const res = await fetch(`${API}/api/usuarios/me`, {
-                headers: { 'Authorization': getAuth() }
-            });
-            usuarioActual = await res.json();
+            usuarioActual = await apiAjax('GET', '/api/usuarios/me');
 
-            document.getElementById('infoUsername').textContent = usuarioActual.username;
-            document.getElementById('infoRol').textContent = usuarioActual.rol;
-            document.getElementById('infoIngreso').textContent = formatearMoney(usuarioActual.ingresoMensual || 0);
-            document.getElementById('infoAhorro').textContent = formatearMoney(usuarioActual.ahorroMensual || 0);
+            $('#infoUsername').text(usuarioActual.username);
+            $('#infoRol').text(usuarioActual.rol);
+            $('#infoIngreso').text(formatearMoney(usuarioActual.ingresoMensual || 0));
+            $('#infoAhorro').text(formatearMoney(usuarioActual.ahorroMensual || 0));
 
-            document.getElementById('editNombre').value = usuarioActual.nombre || '';
-            document.getElementById('editIngreso').value = usuarioActual.ingresoMensual || '';
-            document.getElementById('editAhorro').value = usuarioActual.ahorroMensual || '';
+            $('#editNombre').val(usuarioActual.nombre || '');
+            $('#editIngreso').val(usuarioActual.ingresoMensual || '');
+            $('#editAhorro').val(usuarioActual.ahorroMensual || '');
 
             const ingreso = usuarioActual.ingresoMensual || 0;
             const ahorro = usuarioActual.ahorroMensual || 0;
             const porcentaje = ingreso > 0 ? (ahorro / ingreso) * 100 : 0;
             const rango = calcularRango(ingreso, ahorro);
-            document.getElementById('rangoContainer').className = `rank-container ${rango.clase}`;
-            document.getElementById('rangoEmoji').textContent = rango.emoji;
-            document.getElementById('rangoNombre').textContent = rango.nombre;
-            document.getElementById('rangoPorcentaje').textContent = porcentaje.toFixed(1) + '% del ingreso ahorrado';
+            $('#rangoContainer').attr('class', `rank-container ${rango.clase}`);
+            $('#rangoEmoji').text(rango.emoji);
+            $('#rangoNombre').text(rango.nombre);
+            $('#rangoPorcentaje').text(porcentaje.toFixed(1) + '% del ingreso ahorrado');
             const progreso = rango.max > rango.min ? ((porcentaje - rango.min) / (rango.max - rango.min)) * 100 : 100;
-            document.getElementById('rangoProgressBar').style.width = Math.min(Math.max(progreso, 0), 100) + '%';
-            document.getElementById('rangoSiguiente').textContent = rango.siguiente ? `Siguiente: ${rango.siguiente} (${rango.max}%)` : '¡Rango maximo alcanzado! 👑';
+            $('#rangoProgressBar').css('width', Math.min(Math.max(progreso, 0), 100) + '%');
+            $('#rangoSiguiente').text(rango.siguiente ? `Siguiente: ${rango.siguiente} (${rango.max}%)` : '¡Rango maximo alcanzado! 👑');
         }
 
+        // Guarda los cambios del perfil (peticion con jQuery)
         async function guardarPerfil() {
-            const msg = document.getElementById('mensajePerfil');
             const body = {
-                nombre: document.getElementById('editNombre').value,
-                ingresoMensual: parseFloat(document.getElementById('editIngreso').value) || 0,
-                ahorroMensual: parseFloat(document.getElementById('editAhorro').value) || 0
+                nombre: $('#editNombre').val(),
+                ingresoMensual: parseFloat($('#editIngreso').val()) || 0,
+                ahorroMensual: parseFloat($('#editAhorro').val()) || 0
             };
 
-            const res = await fetch(`${API}/api/usuarios/${usuarioActual.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'Authorization': getAuth() },
-                body: JSON.stringify(body)
-            });
-
-            if (res.ok) {
-                msg.className = 'alert alert-success';
-                msg.textContent = '✅ Perfil actualizado correctamente';
+            try {
+                await apiAjax('PUT', `/api/usuarios/${usuarioActual.id}`, body);
+                $('#mensajePerfil').attr('class', 'alert alert-success').text('✅ Perfil actualizado correctamente');
                 localStorage.setItem('usuarioNombre', body.nombre);
                 cargarPerfil();
-                setTimeout(() => msg.classList.add('d-none'), 3000);
-            } else {
-                msg.className = 'alert alert-danger';
-                msg.textContent = 'Error al actualizar el perfil';
+                setTimeout(() => $('#mensajePerfil').addClass('d-none'), 3000);
+            } catch (e) {
+                $('#mensajePerfil').attr('class', 'alert alert-danger').text('Error al actualizar el perfil');
             }
         }
 

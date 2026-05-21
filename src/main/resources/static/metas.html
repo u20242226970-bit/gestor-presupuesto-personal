@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
 </head>
 <body>
 
@@ -26,20 +27,20 @@
 
             <!-- SIDEBAR -->
             <div class="col-lg-2 sidebar">
-    <nav class="nav flex-column">
-        <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
-        <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> Gastos</a>
-        <a class="nav-link active" href="metas.html"><i class="bi bi-bullseye"></i> Metas</a>
-        <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> Perfil</a>
-        <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> Ranking</a>
-    </nav>
-</div>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> Gastos</a>
+                    <a class="nav-link active" href="metas.html"><i class="bi bi-bullseye"></i> Metas</a>
+                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> Perfil</a>
+                    <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> Ranking</a>
+                </nav>
+            </div>
 
             <!-- CONTENIDO -->
             <div class="col-lg-10 main-content">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="fw-bold mb-0">🎯 Mis Metas de Ahorro</h4>
+                    <h4 class="fw-bold mb-0"><i class="bi bi-bullseye"></i> Mis Metas de Ahorro</h4>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMeta">
                         <i class="bi bi-plus-lg"></i> Nueva Meta
                     </button>
@@ -130,31 +131,31 @@
         </div>
     </div>
 
+    <!-- jQuery (antes de app.js) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
     <script>
         verificarSesion();
-        document.getElementById('nombreUsuario').innerHTML = '<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre');
+        $('#nombreUsuario').html('<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre'));
 
+        // Carga y muestra las metas del usuario (peticion con jQuery)
         async function cargarMetas() {
             const usuarioId = getUsuarioId();
-            const res = await fetch(`${API}/api/metas/usuario/${usuarioId}`, {
-                headers: { 'Authorization': getAuth() }
-            });
-            const metas = await res.json();
-            const contenedor = document.getElementById('contenedorMetas');
+            const metas = await apiAjax('GET', `/api/metas/usuario/${usuarioId}`);
+            const contenedor = $('#contenedorMetas');
 
             if (metas.length === 0) {
-                contenedor.innerHTML = `
+                contenedor.html(`
                     <div class="col-12 text-center py-5">
                         <div style="font-size:80px">🎯</div>
                         <h5 class="text-muted mt-3">No tienes metas todavia</h5>
                         <p class="text-muted">Crea tu primera meta de ahorro</p>
-                    </div>`;
+                    </div>`);
                 return;
             }
 
-            contenedor.innerHTML = metas.map(m => {
+            contenedor.html(metas.map(m => {
                 const porcentaje = m.precioObjetivo > 0
                     ? Math.min((m.montoAhorrado / m.precioObjetivo) * 100, 100)
                     : 0;
@@ -200,14 +201,15 @@
                         </div>
                     </div>
                 </div>`;
-            }).join('');
+            }).join(''));
         }
 
+        // Crea una nueva meta (peticion con jQuery)
         async function guardarMeta() {
-            const nombre = document.getElementById('metaNombre').value;
-            const emoji = document.getElementById('metaEmoji').value;
-            const precioObjetivo = document.getElementById('metaPrecio').value;
-            const fechaLimite = document.getElementById('metaFecha').value;
+            const nombre = $('#metaNombre').val();
+            const emoji = $('#metaEmoji').val();
+            const precioObjetivo = $('#metaPrecio').val();
+            const fechaLimite = $('#metaFecha').val();
 
             if (!nombre || !precioObjetivo) {
                 mostrarError('alertaMeta', 'Completa los campos obligatorios');
@@ -224,31 +226,27 @@
                 usuario: { id: parseInt(usuarioId) }
             };
 
-            const res = await fetch(`${API}/api/metas`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': getAuth()
-                },
-                body: JSON.stringify(body)
-            });
-
-            if (res.ok) {
+            try {
+                await apiAjax('POST', '/api/metas', body);
                 bootstrap.Modal.getInstance(document.getElementById('modalMeta')).hide();
                 cargarMetas();
+            } catch (e) {
+                mostrarError('alertaMeta', 'Error al crear la meta');
             }
         }
 
+        // Abre el modal de abono con los datos de la meta
         function abrirAbono(metaId, metaNombre) {
-            document.getElementById('abonoMetaId').value = metaId;
-            document.getElementById('abonoMetaNombre').textContent = 'Meta: ' + metaNombre;
+            $('#abonoMetaId').val(metaId);
+            $('#abonoMetaNombre').text('Meta: ' + metaNombre);
             new bootstrap.Modal(document.getElementById('modalAbono')).show();
         }
 
+        // Registra un abono a una meta (peticion con jQuery)
         async function guardarAbono() {
-            const metaId = document.getElementById('abonoMetaId').value;
-            const monto = document.getElementById('abonoMonto').value;
-            const descripcion = document.getElementById('abonoDescripcion').value;
+            const metaId = $('#abonoMetaId').val();
+            const monto = $('#abonoMonto').val();
+            const descripcion = $('#abonoDescripcion').val();
 
             if (!monto) return;
 
@@ -259,29 +257,21 @@
                 meta: { id: parseInt(metaId) }
             };
 
-            const res = await fetch(`${API}/api/abonos`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': getAuth()
-                },
-                body: JSON.stringify(body)
-            });
-
-            if (res.ok) {
+            try {
+                await apiAjax('POST', '/api/abonos', body);
                 bootstrap.Modal.getInstance(document.getElementById('modalAbono')).hide();
-                document.getElementById('abonoMonto').value = '';
-                document.getElementById('abonoDescripcion').value = '';
+                $('#abonoMonto').val('');
+                $('#abonoDescripcion').val('');
                 cargarMetas();
+            } catch (e) {
+                alert('Error al registrar el abono');
             }
         }
 
+        // Elimina una meta (peticion con jQuery)
         async function eliminarMeta(id) {
             if (!confirm('Eliminar esta meta?')) return;
-            await fetch(`${API}/api/metas/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': getAuth() }
-            });
+            await apiAjax('DELETE', `/api/metas/${id}`);
             cargarMetas();
         }
 
