@@ -4,21 +4,36 @@ import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 
+/**
+ * Entidad que representa un gasto registrado por un usuario.
+ * Cada gasto está asociado a una categoría y a un usuario.
+ */
 @Entity
 public class Gasto {
 
+    /** Identificador único del gasto, generado automáticamente. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /** Descripción del gasto. */
     private String descripcion;
+
+    /** Monto del gasto. */
     private Double monto;
+
+    /** Fecha en la que se realizó el gasto. */
     private LocalDate fecha;
 
+    /** Categoría a la que pertenece el gasto. Relación de muchos gastos a una categoría. */
     @ManyToOne
     @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
+    /**
+     * Usuario propietario del gasto. Relación de muchos gastos a un usuario.
+     * Se marca como WRITE_ONLY para no exponer los datos del usuario al serializar.
+     */
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
