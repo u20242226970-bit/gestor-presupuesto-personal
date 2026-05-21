@@ -37,7 +37,7 @@
 
             <!-- CONTENIDO -->
             <div class="col-lg-10 main-content">
-                <h4 class="fw-bold mb-1">🏆 Ranking de Ahorradores</h4>
+                <h4 class="fw-bold mb-1"><i class="bi bi-trophy-fill"></i> Ranking de Ahorradores</h4>
                 <p class="text-muted mb-4">Clasificacion segun el porcentaje de ingreso ahorrado</p>
 
                 <!-- PODIO TOP 3 -->
@@ -78,7 +78,7 @@
         const MEDALLAS = ['🥇', '🥈', '🥉'];
 
         async function cargarRanking() {
-            document.getElementById('nombreUsuario').textContent = '👤 ' + localStorage.getItem('usuarioNombre');
+        	document.getElementById('nombreUsuario').innerHTML = '<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre');
             const miId = String(getUsuarioId());
 
             const res = await fetch(`${API}/api/usuarios`, {

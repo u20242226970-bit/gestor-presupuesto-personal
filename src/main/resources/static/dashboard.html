@@ -12,7 +12,7 @@
 
     <!-- NAVBAR -->
     <nav class="navbar navbar-dark navbar-custom px-4">
-        <span class="navbar-brand fw-bold fs-4">💰 FinanceRank</span>
+        <span class="navbar-brand fw-bold fs-4"><i class="bi bi-piggy-bank-fill"></i> FinanceRank</span>
         <div class="d-flex align-items-center gap-3">
             <span class="text-white" id="nombreUsuario"></span>
             <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
@@ -102,7 +102,7 @@
                 <!-- ACTUALIZAR FINANZAS -->
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3">💰 Actualizar mis Finanzas</h5>
+                        <h5 class="fw-bold mb-3"><i class="bi bi-cash-coin"></i> Actualizar mis Finanzas</h5>
                         <p class="text-muted">Mantén tu información actualizada para un rango preciso</p>
                         <div class="row g-3 align-items-end">
                             <div class="col-md-4">
@@ -179,12 +179,26 @@
                         </div>
                     </div>
                 </div>
+                <!-- GRAFICA: GASTOS POR CATEGORIA -->
+<div class="card border-0 shadow-sm rounded-4 mb-4">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill"></i> Gastos por categoría</h5>
+        <div id="contenedorGrafica" style="position: relative; height: 300px;">
+            <canvas id="graficaGastos"></canvas>
+        </div>
+        <div id="sinGastosGrafica" class="text-center text-muted py-5 d-none">
+            <i class="bi bi-pie-chart fs-1 opacity-50"></i>
+            <p class="mt-2 mb-0">Aún no hay gastos para mostrar en la gráfica</p>
+        </div>
+    </div>
+</div>
+
 
                 <!-- ULTIMOS GASTOS -->
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="fw-bold mb-0">📋 Ultimos Gastos</h5>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-list-ul"></i> Últimos Gastos</h5>
                             <a href="gastos.html" class="btn btn-primary btn-sm">Ver todos</a>
                         </div>
                         <div class="table-responsive">
@@ -214,14 +228,85 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="app.js"></script>
     <script>
+    let graficaGastosInstance = null;
+
+    function renderGraficaGastos(gastos) {
+        const contenedor = document.getElementById('contenedorGrafica');
+        const sinDatos = document.getElementById('sinGastosGrafica');
+
+        // Agrupar montos por categoria
+        const porCategoria = {};
+        gastos.forEach(g => {
+            const nombre = g.categoria ? g.categoria.nombre : 'Sin categoría';
+            porCategoria[nombre] = (porCategoria[nombre] || 0) + g.monto;
+        });
+
+        const etiquetas = Object.keys(porCategoria);
+        const valores = Object.values(porCategoria);
+
+        // Si no hay gastos, mostrar mensaje y salir
+        if (etiquetas.length === 0) {
+            contenedor.classList.add('d-none');
+            sinDatos.classList.remove('d-none');
+            return;
+        }
+        contenedor.classList.remove('d-none');
+        sinDatos.classList.add('d-none');
+
+        // Paleta acorde al tema (navy, dorado, verde, coral...)
+        const colores = ['#0F2C4C', '#C9A227', '#1F8A5B', '#C97B3F', '#1B3A5B',
+                         '#E0BE4E', '#2A9D6B', '#8A2F1C', '#546E7A', '#0077B6'];
+
+        // Destruir grafica previa para evitar duplicados al recargar datos
+        if (graficaGastosInstance) {
+            graficaGastosInstance.destroy();
+        }
+
+        graficaGastosInstance = new Chart(document.getElementById('graficaGastos'), {
+            type: 'doughnut',
+            data: {
+                labels: etiquetas,
+                datasets: [{
+                    data: valores,
+                    backgroundColor: colores,
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { font: { size: 13 }, padding: 15 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(ctx) {
+                                const valor = ctx.parsed;
+                                const total = valores.reduce((a, b) => a + b, 0);
+                                const pct = ((valor / total) * 100).toFixed(1);
+                                return ctx.label + ': ' + formatearMoney(valor) + ' (' + pct + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    
+    
         verificarSesion();
 
         async function cargarDashboard() {
             const usuarioId = getUsuarioId();
             const nombre = localStorage.getItem('usuarioNombre');
-            document.getElementById('nombreUsuario').textContent = '👤 ' + nombre;
+            document.getElementById('nombreUsuario').innerHTML = '<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre');
 
             const resUsuario = await fetch(`${API}/api/usuarios/me`, {
                 headers: { 'Authorization': getAuth() }
@@ -239,6 +324,7 @@
             const gastos = await resGastos.json();
             const totalGastado = gastos.reduce((sum, g) => sum + g.monto, 0);
             document.getElementById('statGastado').textContent = formatearMoney(totalGastado);
+            renderGraficaGastos(gastos);
 
             const resMetas = await fetch(`${API}/api/metas/usuario/${usuarioId}`, {
                 headers: { 'Authorization': getAuth() }

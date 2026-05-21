@@ -57,7 +57,7 @@
                     <div class="col-lg-8">
                         <div class="card border-0 shadow-sm rounded-4 mb-4">
                             <div class="card-body p-4">
-                                <h5 class="fw-bold mb-3">👤 Datos de la cuenta</h5>
+                                <h5 class="fw-bold mb-3"><i class="bi bi-person-vcard"></i> Datos de la cuenta</h5>
                                 <div class="row mb-2">
                                     <div class="col-4 text-muted">Usuario</div>
                                     <div class="col-8 fw-semibold" id="infoUsername">-</div>
@@ -79,7 +79,7 @@
 
                         <div class="card border-0 shadow-sm rounded-4">
                             <div class="card-body p-4">
-                                <h5 class="fw-bold mb-3">✏️ Editar perfil</h5>
+                                <h5 class="fw-bold mb-3"><i class="bi bi-pencil-square"></i> Editar perfil</h5>
                                 <div id="mensajePerfil" class="alert d-none"></div>
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Nombre completo</label>
@@ -120,7 +120,7 @@
         let usuarioActual = null;
 
         async function cargarPerfil() {
-            document.getElementById('nombreUsuario').textContent = '👤 ' + localStorage.getItem('usuarioNombre');
+        	document.getElementById('nombreUsuario').innerHTML = '<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre');
 
             const res = await fetch(`${API}/api/usuarios/me`, {
                 headers: { 'Authorization': getAuth() }
