@@ -39,7 +39,13 @@
             <!-- CONTENIDO PRINCIPAL -->
             <div class="col-lg-10 main-content">
 
-                <h4 class="fw-bold mb-4">Panel Principal</h4>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0">Panel Principal</h4>
+    <button onclick="descargarReporte()" class="btn btn-primary">
+        <i class="bi bi-file-earmark-pdf"></i> Descargar Reporte
+    </button>
+</div>
+
 
                 <!-- RANGO ACTUAL -->
                 <div class="row mb-4">
@@ -220,6 +226,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script src="app.js"></script>
     <script>
         let graficaGastosInstance = null;
@@ -284,6 +292,126 @@
         }
 
         verificarSesion();
+        
+     // Variables para guardar los datos cargados (se usan en el reporte)
+        let datosUsuario = null;
+        let datosGastos = [];
+        let datosMetas = [];
+
+        // Genera y descarga un reporte PDF con los datos financieros del usuario
+        function descargarReporte() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            const ingreso = datosUsuario.ingresoMensual || 0;
+            const ahorro = datosUsuario.ahorroMensual || 0;
+            const totalGastado = datosGastos.reduce((sum, g) => sum + g.monto, 0);
+            const porcentaje = ingreso > 0 ? (ahorro / ingreso) * 100 : 0;
+            const rango = calcularRango(ingreso, ahorro);
+
+            // ===== ENCABEZADO =====
+            doc.setFillColor(15, 44, 76); // navy
+            doc.rect(0, 0, 210, 30, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('FinanceRank - Reporte Financiero', 14, 19);
+
+            // ===== DATOS DEL USUARIO =====
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            let y = 42;
+            doc.text(`Usuario: ${datosUsuario.nombre}`, 14, y);
+            doc.text(`Rango actual: ${rango.nombre} (${porcentaje.toFixed(1)}% de ahorro)`, 14, y + 7);
+            doc.text(`Fecha del reporte: ${new Date().toLocaleDateString('es-CO')}`, 14, y + 14);
+
+            // ===== RESUMEN FINANCIERO =====
+            y += 28;
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Resumen Financiero', 14, y);
+
+            doc.autoTable({
+                startY: y + 4,
+                head: [['Concepto', 'Valor']],
+                body: [
+                    ['Ingreso mensual', formatearMoney(ingreso)],
+                    ['Ahorro mensual', formatearMoney(ahorro)],
+                    ['Total gastado', formatearMoney(totalGastado)],
+                    ['Porcentaje de ahorro', porcentaje.toFixed(1) + '%']
+                ],
+                theme: 'striped',
+                headStyles: { fillColor: [15, 44, 76] }
+            });
+
+            // ===== TABLA DE GASTOS =====
+            let yGastos = doc.lastAutoTable.finalY + 12;
+            doc.setFontSize(14);
+            doc.text('Gastos Registrados', 14, yGastos);
+
+            if (datosGastos.length > 0) {
+                doc.autoTable({
+                    startY: yGastos + 4,
+                    head: [['Descripcion', 'Categoria', 'Monto', 'Fecha']],
+                    body: datosGastos.map(g => [
+                        g.descripcion,
+                        g.categoria ? g.categoria.nombre : 'Sin categoria',
+                        formatearMoney(g.monto),
+                        g.fecha || '-'
+                    ]),
+                    theme: 'striped',
+                    headStyles: { fillColor: [201, 162, 39] } // dorado
+                });
+            } else {
+                doc.setFontSize(11);
+                doc.setFont(undefined, 'normal');
+                doc.text('No hay gastos registrados.', 14, yGastos + 8);
+            }
+
+            // ===== TABLA DE METAS =====
+            let yMetas = (doc.lastAutoTable ? doc.lastAutoTable.finalY : yGastos) + 12;
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Metas de Ahorro', 14, yMetas);
+
+            if (datosMetas.length > 0) {
+                doc.autoTable({
+                    startY: yMetas + 4,
+                    head: [['Meta', 'Objetivo', 'Ahorrado', 'Progreso']],
+                    body: datosMetas.map(m => {
+                        const prog = m.precioObjetivo > 0
+                            ? Math.min((m.montoAhorrado / m.precioObjetivo) * 100, 100)
+                            : 0;
+                        return [
+                            m.nombre,
+                            formatearMoney(m.precioObjetivo),
+                            formatearMoney(m.montoAhorrado || 0),
+                            prog.toFixed(1) + '%'
+                        ];
+                    }),
+                    theme: 'striped',
+                    headStyles: { fillColor: [31, 138, 91] } // verde
+                });
+            } else {
+                doc.setFontSize(11);
+                doc.setFont(undefined, 'normal');
+                doc.text('No hay metas registradas.', 14, yMetas + 8);
+            }
+
+            // ===== PIE DE PAGINA =====
+            const totalPaginas = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= totalPaginas; i++) {
+                doc.setPage(i);
+                doc.setFontSize(9);
+                doc.setTextColor(150);
+                doc.text('Generado por FinanceRank', 14, 290);
+                doc.text(`Pagina ${i} de ${totalPaginas}`, 180, 290);
+            }
+
+            // Descargar
+            doc.save(`Reporte_FinanceRank_${datosUsuario.nombre}.pdf`);
+        }
 
         // Carga todos los datos del dashboard (peticiones con jQuery)
         async function cargarDashboard() {
@@ -292,6 +420,7 @@
 
             // Datos del usuario
             const usuario = await apiAjax('GET', '/api/usuarios/me');
+            datosUsuario = usuario;
             const ingreso = usuario.ingresoMensual || 0;
             const ahorroMensual = usuario.ahorroMensual || 0;
 
@@ -300,12 +429,14 @@
 
             // Gastos
             const gastos = await apiAjax('GET', `/api/gastos/usuario/${usuarioId}`);
+            datosGastos = gastos;
             const totalGastado = gastos.reduce((sum, g) => sum + g.monto, 0);
             $('#statGastado').text(formatearMoney(totalGastado));
             renderGraficaGastos(gastos);
 
             // Metas
             const metas = await apiAjax('GET', `/api/metas/usuario/${usuarioId}`);
+            datosMetas = metas;
             $('#statMetas').text(metas.length);
 
             // Calculo del rango
