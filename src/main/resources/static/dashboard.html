@@ -15,9 +15,14 @@
     <nav class="navbar navbar-dark navbar-custom px-4">
         <span class="navbar-brand fw-bold fs-4"><i class="bi bi-piggy-bank-fill"></i> FinanceRank</span>
         <div class="d-flex align-items-center gap-3">
+            <!-- SELECTOR DE IDIOMA -->
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-light" data-idioma="es" onclick="cambiarIdioma('es')">ES</button>
+                <button class="btn btn-outline-light" data-idioma="en" onclick="cambiarIdioma('en')">EN</button>
+            </div>
             <span class="text-white" id="nombreUsuario"></span>
             <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-box-arrow-right"></i> Salir
+                <i class="bi bi-box-arrow-right"></i> <span data-i18n="nav_salir">Salir</span>
             </button>
         </div>
     </nav>
@@ -28,11 +33,11 @@
             <!-- SIDEBAR -->
             <div class="col-lg-2 sidebar">
                 <nav class="nav flex-column">
-                    <a class="nav-link active" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                    <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> Gastos</a>
-                    <a class="nav-link" href="metas.html"><i class="bi bi-bullseye"></i> Metas</a>
-                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> Perfil</a>
-                    <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> Ranking</a>
+                    <a class="nav-link active" href="dashboard.html"><i class="bi bi-speedometer2"></i> <span data-i18n="nav_dashboard">Dashboard</span></a>
+                    <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> <span data-i18n="nav_gastos">Gastos</span></a>
+                    <a class="nav-link" href="metas.html"><i class="bi bi-bullseye"></i> <span data-i18n="nav_metas">Metas</span></a>
+                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> <span data-i18n="nav_perfil">Perfil</span></a>
+                    <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> <span data-i18n="nav_ranking">Ranking</span></a>
                 </nav>
             </div>
 
@@ -40,12 +45,11 @@
             <div class="col-lg-10 main-content">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0">Panel Principal</h4>
-    <button onclick="descargarReporte()" class="btn btn-primary">
-        <i class="bi bi-file-earmark-pdf"></i> Descargar Reporte
-    </button>
-</div>
-
+                    <h4 class="fw-bold mb-0" data-i18n="dash_titulo">Panel Principal</h4>
+                    <button onclick="descargarReporte()" class="btn btn-primary">
+                        <i class="bi bi-file-earmark-pdf"></i> <span data-i18n="dash_descargar">Descargar Reporte</span>
+                    </button>
+                </div>
 
                 <!-- RANGO ACTUAL -->
                 <div class="row mb-4">
@@ -66,28 +70,28 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="stat-card blue">
-                                    <div class="fs-6 opacity-75">Ingreso Mensual</div>
+                                    <div class="fs-6 opacity-75" data-i18n="dash_ingreso">Ingreso Mensual</div>
                                     <div class="fs-3 fw-bold" id="statIngreso">$0</div>
                                     <i class="bi bi-cash-stack fs-1 opacity-25"></i>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="stat-card orange">
-                                    <div class="fs-6 opacity-75">Total Gastado</div>
+                                    <div class="fs-6 opacity-75" data-i18n="dash_gastado">Total Gastado</div>
                                     <div class="fs-3 fw-bold" id="statGastado">$0</div>
                                     <i class="bi bi-graph-down-arrow fs-1 opacity-25"></i>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="stat-card green">
-                                    <div class="fs-6 opacity-75">Ahorro Mensual</div>
+                                    <div class="fs-6 opacity-75" data-i18n="dash_ahorro">Ahorro Mensual</div>
                                     <div class="fs-3 fw-bold" id="statAhorrado">$0</div>
                                     <i class="bi bi-piggy-bank fs-1 opacity-25"></i>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="stat-card purple">
-                                    <div class="fs-6 opacity-75">Metas Activas</div>
+                                    <div class="fs-6 opacity-75" data-i18n="dash_metas_activas">Metas Activas</div>
                                     <div class="fs-3 fw-bold" id="statMetas">0</div>
                                     <i class="bi bi-bullseye fs-1 opacity-25"></i>
                                 </div>
@@ -99,18 +103,18 @@
                 <!-- ACTUALIZAR FINANZAS -->
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3"><i class="bi bi-cash-coin"></i> Actualizar mis Finanzas</h5>
-                        <p class="text-muted">Mantén tu información actualizada para un rango preciso</p>
+                        <h5 class="fw-bold mb-3"><i class="bi bi-cash-coin"></i> <span data-i18n="dash_actualizar_titulo">Actualizar mis Finanzas</span></h5>
+                        <p class="text-muted" data-i18n="dash_actualizar_desc">Mantén tu información actualizada para un rango preciso</p>
                         <div class="row g-3 align-items-end">
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold">Ingreso mensual</label>
+                                <label class="form-label fw-semibold" data-i18n="dash_ingreso_mensual">Ingreso mensual</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
                                     <input type="number" id="nuevoIngreso" class="form-control" placeholder="2000000">
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold">Ahorro mensual</label>
+                                <label class="form-label fw-semibold" data-i18n="dash_ahorro_mensual">Ahorro mensual</label>
                                 <div class="input-group">
                                     <span class="input-group-text">$</span>
                                     <input type="number" id="nuevoAhorro" class="form-control" placeholder="300000">
@@ -118,7 +122,7 @@
                             </div>
                             <div class="col-md-3">
                                 <button onclick="actualizarFinanzas()" class="btn btn-primary w-100 py-2">
-                                    <i class="bi bi-arrow-up-circle"></i> Actualizar
+                                    <i class="bi bi-arrow-up-circle"></i> <span data-i18n="dash_boton_actualizar">Actualizar</span>
                                 </button>
                             </div>
                         </div>
@@ -129,47 +133,47 @@
                 <!-- TODOS LOS RANGOS -->
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
-                        <h5 class="fw-bold mb-4"><i class="bi bi-trophy-fill"></i> Sistema de Rangos</h5>
+                        <h5 class="fw-bold mb-4"><i class="bi bi-trophy-fill"></i> <span data-i18n="dash_sistema_rangos">Sistema de Rangos</span></h5>
                         <div class="row g-3">
                             <div class="col-md-2 col-4 text-center">
                                 <div class="p-3 rounded-3 rank-piedra text-white">
                                     <div style="font-size:40px">🪨</div>
-                                    <div class="fw-bold">Piedra</div>
+                                    <div class="fw-bold" data-i18n="rango_piedra">Piedra</div>
                                     <small>0-4%</small>
                                 </div>
                             </div>
                             <div class="col-md-2 col-4 text-center">
                                 <div class="p-3 rounded-3 rank-bronce text-white">
                                     <div style="font-size:40px">🥉</div>
-                                    <div class="fw-bold">Bronce</div>
+                                    <div class="fw-bold" data-i18n="rango_bronce">Bronce</div>
                                     <small>5-9%</small>
                                 </div>
                             </div>
                             <div class="col-md-2 col-4 text-center">
                                 <div class="p-3 rounded-3 rank-plata text-white">
                                     <div style="font-size:40px">🥈</div>
-                                    <div class="fw-bold">Plata</div>
+                                    <div class="fw-bold" data-i18n="rango_plata">Plata</div>
                                     <small>10-19%</small>
                                 </div>
                             </div>
                             <div class="col-md-2 col-4 text-center">
                                 <div class="p-3 rounded-3 rank-oro text-white">
                                     <div style="font-size:40px">🥇</div>
-                                    <div class="fw-bold">Oro</div>
+                                    <div class="fw-bold" data-i18n="rango_oro">Oro</div>
                                     <small>20-29%</small>
                                 </div>
                             </div>
                             <div class="col-md-2 col-4 text-center">
                                 <div class="p-3 rounded-3 rank-diamante text-white">
                                     <div style="font-size:40px">💎</div>
-                                    <div class="fw-bold">Diamante</div>
+                                    <div class="fw-bold" data-i18n="rango_diamante">Diamante</div>
                                     <small>30-44%</small>
                                 </div>
                             </div>
                             <div class="col-md-2 col-4 text-center">
                                 <div class="p-3 rounded-3 rank-elite text-white">
                                     <div style="font-size:40px">👑</div>
-                                    <div class="fw-bold">Elite</div>
+                                    <div class="fw-bold" data-i18n="rango_elite">Elite</div>
                                     <small>45%+</small>
                                 </div>
                             </div>
@@ -180,13 +184,13 @@
                 <!-- GRAFICA: GASTOS POR CATEGORIA -->
                 <div class="card border-0 shadow-sm rounded-4 mb-4">
                     <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill"></i> Gastos por categoría</h5>
+                        <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill"></i> <span data-i18n="dash_grafica_titulo">Gastos por categoría</span></h5>
                         <div id="contenedorGrafica" style="position: relative; height: 300px;">
                             <canvas id="graficaGastos"></canvas>
                         </div>
                         <div id="sinGastosGrafica" class="text-center text-muted py-5 d-none">
                             <i class="bi bi-pie-chart fs-1 opacity-50"></i>
-                            <p class="mt-2 mb-0">Aún no hay gastos para mostrar en la gráfica</p>
+                            <p class="mt-2 mb-0" data-i18n="dash_sin_gastos_grafica">Aún no hay gastos para mostrar en la gráfica</p>
                         </div>
                     </div>
                 </div>
@@ -195,8 +199,8 @@
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h5 class="fw-bold mb-0"><i class="bi bi-list-ul"></i> Últimos Gastos</h5>
-                            <a href="gastos.html" class="btn btn-primary btn-sm">Ver todos</a>
+                            <h5 class="fw-bold mb-0"><i class="bi bi-list-ul"></i> <span data-i18n="dash_ultimos_gastos">Últimos Gastos</span></h5>
+                            <a href="gastos.html" class="btn btn-primary btn-sm" data-i18n="dash_ver_todos">Ver todos</a>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover">
@@ -227,8 +231,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
     <script src="app.js"></script>
+    <script src="i18n.js"></script>
     <script>
         let graficaGastosInstance = null;
 
@@ -292,8 +297,8 @@
         }
 
         verificarSesion();
-        
-     // Variables para guardar los datos cargados (se usan en el reporte)
+
+        // Variables para guardar los datos cargados (se usan en el reporte PDF)
         let datosUsuario = null;
         let datosGastos = [];
         let datosMetas = [];
@@ -309,15 +314,13 @@
             const porcentaje = ingreso > 0 ? (ahorro / ingreso) * 100 : 0;
             const rango = calcularRango(ingreso, ahorro);
 
-            // ===== ENCABEZADO =====
-            doc.setFillColor(15, 44, 76); // navy
+            doc.setFillColor(15, 44, 76);
             doc.rect(0, 0, 210, 30, 'F');
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(20);
             doc.setFont(undefined, 'bold');
             doc.text('FinanceRank - Reporte Financiero', 14, 19);
 
-            // ===== DATOS DEL USUARIO =====
             doc.setTextColor(0, 0, 0);
             doc.setFontSize(12);
             doc.setFont(undefined, 'normal');
@@ -326,7 +329,6 @@
             doc.text(`Rango actual: ${rango.nombre} (${porcentaje.toFixed(1)}% de ahorro)`, 14, y + 7);
             doc.text(`Fecha del reporte: ${new Date().toLocaleDateString('es-CO')}`, 14, y + 14);
 
-            // ===== RESUMEN FINANCIERO =====
             y += 28;
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
@@ -345,7 +347,6 @@
                 headStyles: { fillColor: [15, 44, 76] }
             });
 
-            // ===== TABLA DE GASTOS =====
             let yGastos = doc.lastAutoTable.finalY + 12;
             doc.setFontSize(14);
             doc.text('Gastos Registrados', 14, yGastos);
@@ -361,7 +362,7 @@
                         g.fecha || '-'
                     ]),
                     theme: 'striped',
-                    headStyles: { fillColor: [201, 162, 39] } // dorado
+                    headStyles: { fillColor: [201, 162, 39] }
                 });
             } else {
                 doc.setFontSize(11);
@@ -369,7 +370,6 @@
                 doc.text('No hay gastos registrados.', 14, yGastos + 8);
             }
 
-            // ===== TABLA DE METAS =====
             let yMetas = (doc.lastAutoTable ? doc.lastAutoTable.finalY : yGastos) + 12;
             doc.setFontSize(14);
             doc.setFont(undefined, 'bold');
@@ -391,7 +391,7 @@
                         ];
                     }),
                     theme: 'striped',
-                    headStyles: { fillColor: [31, 138, 91] } // verde
+                    headStyles: { fillColor: [31, 138, 91] }
                 });
             } else {
                 doc.setFontSize(11);
@@ -399,7 +399,6 @@
                 doc.text('No hay metas registradas.', 14, yMetas + 8);
             }
 
-            // ===== PIE DE PAGINA =====
             const totalPaginas = doc.internal.getNumberOfPages();
             for (let i = 1; i <= totalPaginas; i++) {
                 doc.setPage(i);
@@ -409,7 +408,6 @@
                 doc.text(`Pagina ${i} de ${totalPaginas}`, 180, 290);
             }
 
-            // Descargar
             doc.save(`Reporte_FinanceRank_${datosUsuario.nombre}.pdf`);
         }
 
@@ -418,7 +416,6 @@
             const usuarioId = getUsuarioId();
             $('#nombreUsuario').html('<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre'));
 
-            // Datos del usuario
             const usuario = await apiAjax('GET', '/api/usuarios/me');
             datosUsuario = usuario;
             const ingreso = usuario.ingresoMensual || 0;
@@ -427,30 +424,31 @@
             $('#statIngreso').text(formatearMoney(ingreso));
             $('#statAhorrado').text(formatearMoney(ahorroMensual));
 
-            // Gastos
             const gastos = await apiAjax('GET', `/api/gastos/usuario/${usuarioId}`);
             datosGastos = gastos;
             const totalGastado = gastos.reduce((sum, g) => sum + g.monto, 0);
             $('#statGastado').text(formatearMoney(totalGastado));
             renderGraficaGastos(gastos);
 
-            // Metas
             const metas = await apiAjax('GET', `/api/metas/usuario/${usuarioId}`);
             datosMetas = metas;
             $('#statMetas').text(metas.length);
 
-            // Calculo del rango
             const porcentaje = ingreso > 0 ? (ahorroMensual / ingreso) * 100 : 0;
             const rango = calcularRango(ingreso, ahorroMensual);
             $('#rangoContainer').attr('class', `rank-container ${rango.clase}`);
             $('#rangoEmoji').text(rango.emoji);
-            $('#rangoNombre').text(rango.nombre);
-            $('#rangoPorcentaje').text(porcentaje.toFixed(1) + '% del ingreso ahorrado');
+            $('#rangoNombre').text(traducirRango(rango.clase).toUpperCase());
+            $('#rangoPorcentaje').text(porcentaje.toFixed(1) + '% ' + (getIdioma() === 'en' ? 'of income saved' : 'del ingreso ahorrado'));
             const progreso = rango.max > rango.min ? ((porcentaje - rango.min) / (rango.max - rango.min)) * 100 : 100;
             $('#rangoProgressBar').css('width', Math.min(Math.max(progreso, 0), 100) + '%');
-            $('#rangoSiguiente').text(rango.siguiente ? `Siguiente: ${rango.siguiente} (${rango.max}%)` : '¡Rango maximo alcanzado! 👑');
+            if (rango.siguiente) {
+                const sig = getIdioma() === 'en' ? 'Next' : 'Siguiente';
+                $('#rangoSiguiente').text(`${sig}: ${traducirRango('rank-' + rango.siguiente.toLowerCase())} (${rango.max}%)`);
+            } else {
+                $('#rangoSiguiente').text(getIdioma() === 'en' ? 'Max rank reached! 👑' : '¡Rango maximo alcanzado! 👑');
+            }
 
-            // Tabla ultimos gastos
             const tabla = $('#tablaUltimosGastos');
             if (gastos.length === 0) {
                 tabla.html('<tr><td colspan="4" class="text-center text-muted py-3">No hay gastos registrados aun</td></tr>');
@@ -466,7 +464,6 @@
             }
         }
 
-        // Actualiza ingreso/ahorro del usuario (peticion con jQuery)
         async function actualizarFinanzas() {
             const nuevoAhorro = $('#nuevoAhorro').val();
             const nuevoIngreso = $('#nuevoIngreso').val();
@@ -493,8 +490,25 @@
                 msg.attr('class', 'alert alert-danger mt-3 mb-0 py-2').text('Error al actualizar');
             }
         }
-
         cargarDashboard();
+
+        // Cuando se cambia el idioma, vuelve a pintar el rango en el nuevo idioma
+        function alCambiarIdioma() {
+            if (datosUsuario) {
+                const ingreso = datosUsuario.ingresoMensual || 0;
+                const ahorroMensual = datosUsuario.ahorroMensual || 0;
+                const porcentaje = ingreso > 0 ? (ahorroMensual / ingreso) * 100 : 0;
+                const rango = calcularRango(ingreso, ahorroMensual);
+                $('#rangoNombre').text(traducirRango(rango.clase).toUpperCase());
+                $('#rangoPorcentaje').text(porcentaje.toFixed(1) + '% ' + (getIdioma() === 'en' ? 'of income saved' : 'del ingreso ahorrado'));
+                if (rango.siguiente) {
+                    const sig = getIdioma() === 'en' ? 'Next' : 'Siguiente';
+                    $('#rangoSiguiente').text(`${sig}: ${traducirRango('rank-' + rango.siguiente.toLowerCase())} (${rango.max}%)`);
+                } else {
+                    $('#rangoSiguiente').text(getIdioma() === 'en' ? 'Max rank reached! 👑' : '¡Rango maximo alcanzado! 👑');
+                }
+            }
+        }
     </script>
 </body>
 </html>

@@ -4,79 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinanceRank - Login</title>
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Estilos propios -->
-    <link href="style.css" rel="stylesheet">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
 <body class="login-body">
 
-    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center">
-        <div class="row w-100">
+    <!-- SELECTOR DE IDIOMA -->
+    <div class="position-absolute top-0 end-0 m-3" style="z-index: 10;">
+        <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-light" data-idioma="es" onclick="cambiarIdioma('es')">ES</button>
+            <button class="btn btn-outline-light" data-idioma="en" onclick="cambiarIdioma('en')">EN</button>
+        </div>
+    </div>
 
-            <!-- Panel izquierdo -->
-            <div class="col-lg-6 d-none d-lg-flex flex-column align-items-center justify-content-center login-left">
-                <h1 class="display-4 fw-bold text-white mb-3">💰 FinanceRank</h1>
-                <p class="text-white fs-5 text-center px-5">
-                    Controla tus gastos, define metas de ahorro y sube de rango financiero.
-                </p>
-                <div class="mt-4 d-flex gap-3">
-                    <div class="rank-badge">🪨 Piedra</div>
-                    <div class="rank-badge">🥉 Bronce</div>
-                    <div class="rank-badge">🥈 Plata</div>
-                    <div class="rank-badge">🥇 Oro</div>
-                    <div class="rank-badge">💎 Diamante</div>
-                    <div class="rank-badge">👑 Elite</div>
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+
+            <!-- LADO IZQUIERDO (HERO) -->
+            <div class="col-lg-6 d-none d-lg-flex flex-column justify-content-center login-left text-white">
+                <div class="text-center">
+                    <div class="mb-4">
+                        <span style="font-size:70px">💰</span>
+                        <h1 class="fw-bold display-3">FinanceRank</h1>
+                    </div>
+                    <p class="fs-4 px-5" data-i18n="hero_eslogan">Controla tus gastos, define metas de ahorro y sube de rango financiero.</p>
+
+                    <div class="d-flex justify-content-center gap-2 flex-wrap mt-4 px-4">
+                        <span class="rank-badge">🪨 <span data-i18n="rango_piedra">Piedra</span></span>
+                        <span class="rank-badge">🥉 <span data-i18n="rango_bronce">Bronce</span></span>
+                        <span class="rank-badge">🥈 <span data-i18n="rango_plata">Plata</span></span>
+                        <span class="rank-badge">🥇 <span data-i18n="rango_oro">Oro</span></span>
+                        <span class="rank-badge">💎 <span data-i18n="rango_diamante">Diamante</span></span>
+                        <span class="rank-badge">👑 <span data-i18n="rango_elite">Elite</span></span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Panel derecho — Formulario -->
-            <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <!-- LADO DERECHO (LOGIN) -->
+            <div class="col-lg-6 d-flex align-items-center justify-content-center p-4">
                 <div class="login-card p-5">
-                    <h2 class="fw-bold mb-1 text-center">Bienvenido</h2>
-                    <p class="text-muted text-center mb-4">Inicia sesion en tu cuenta</p>
+                    <h2 class="fw-bold text-center mb-1" data-i18n="login_titulo">Bienvenido</h2>
+                    <p class="text-muted text-center mb-4" data-i18n="login_subtitulo">Inicia sesion en tu cuenta</p>
 
-                    <div id="alertaError" class="alert alert-danger d-none" role="alert">
-                        Usuario o contrasena incorrectos
-                    </div>
+                    <div id="alertaError" class="alert alert-danger d-none"></div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Usuario</label>
+                        <label class="form-label fw-semibold" data-i18n="login_usuario">Usuario</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-person"></i></span>
-                            <input type="text" id="username" class="form-control" placeholder="Tu usuario">
+                            <input type="text" id="username" class="form-control" placeholder="admin">
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Contrasena</label>
+                        <label class="form-label fw-semibold" data-i18n="login_password">Contrasena</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                            <input type="password" id="password" class="form-control" placeholder="Tu contrasena">
+                            <input type="password" id="password" class="form-control" placeholder="••••••••">
                         </div>
                     </div>
 
-                    <button onclick="login()" class="btn btn-primary w-100 py-2 fw-bold fs-5">
-                        Iniciar Sesion
-                    </button>
+                    <button onclick="login()" class="btn btn-primary w-100 py-2 fw-bold" data-i18n="login_boton">Iniciar Sesion</button>
 
                     <hr class="my-4">
 
-                    <p class="text-center text-muted">
-                        No tienes cuenta? 
-                        <a href="register.html" class="text-primary fw-bold">Registrate aqui</a>
+                    <p class="text-center mb-0">
+                        <span data-i18n="login_no_cuenta">No tienes cuenta?</span>
+                        <a href="register.html" class="fw-bold text-decoration-none" data-i18n="login_registrate">Registrate aqui</a>
                     </p>
                 </div>
             </div>
 
         </div>
     </div>
-    
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
+    <script src="i18n.js"></script>
 </body>
 </html>
