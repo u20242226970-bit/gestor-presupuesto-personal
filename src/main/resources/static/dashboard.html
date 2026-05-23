@@ -243,7 +243,7 @@
 
             const porCategoria = {};
             gastos.forEach(g => {
-                const nombre = g.categoria ? g.categoria.nombre : 'Sin categoría';
+            	const nombre = g.categoria ? traducirCategoria(g.categoria.nombre) : traducirCategoria('Sin categoría');
                 porCategoria[nombre] = (porCategoria[nombre] || 0) + g.monto;
             });
 
@@ -456,7 +456,7 @@
                 tabla.html(gastos.slice(-5).reverse().map(g => `
                     <tr>
                         <td>${g.descripcion}</td>
-                        <td><span class="badge bg-primary">${g.categoria ? g.categoria.nombre : 'Sin categoria'}</span></td>
+                        <td><span class="badge bg-primary">${g.categoria ? traducirCategoria(g.categoria.nombre) : traducirCategoria('Sin categoria')}</span></td>
                         <td class="fw-bold text-danger">${formatearMoney(g.monto)}</td>
                         <td>${g.fecha || '-'}</td>
                     </tr>
@@ -494,6 +494,7 @@
 
         // Cuando se cambia el idioma, vuelve a pintar el rango en el nuevo idioma
         function alCambiarIdioma() {
+        	renderGraficaGastos(datosGastos);
             if (datosUsuario) {
                 const ingreso = datosUsuario.ingresoMensual || 0;
                 const ahorroMensual = datosUsuario.ahorroMensual || 0;

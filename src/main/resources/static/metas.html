@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinanceRank - Metas</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
 </head>
 <body>
 
@@ -15,9 +15,13 @@
     <nav class="navbar navbar-dark navbar-custom px-4">
         <span class="navbar-brand fw-bold fs-4"><i class="bi bi-piggy-bank-fill"></i> FinanceRank</span>
         <div class="d-flex align-items-center gap-3">
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-light" data-idioma="es" onclick="cambiarIdioma('es')">ES</button>
+                <button class="btn btn-outline-light" data-idioma="en" onclick="cambiarIdioma('en')">EN</button>
+            </div>
             <span class="text-white" id="nombreUsuario"></span>
             <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-box-arrow-right"></i> Salir
+                <i class="bi bi-box-arrow-right"></i> <span data-i18n="nav_salir">Salir</span>
             </button>
         </div>
     </nav>
@@ -28,11 +32,11 @@
             <!-- SIDEBAR -->
             <div class="col-lg-2 sidebar">
                 <nav class="nav flex-column">
-                    <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                    <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> Gastos</a>
-                    <a class="nav-link active" href="metas.html"><i class="bi bi-bullseye"></i> Metas</a>
-                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> Perfil</a>
-                    <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> Ranking</a>
+                    <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> <span data-i18n="nav_dashboard">Dashboard</span></a>
+                    <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> <span data-i18n="nav_gastos">Gastos</span></a>
+                    <a class="nav-link active" href="metas.html"><i class="bi bi-bullseye"></i> <span data-i18n="nav_metas">Metas</span></a>
+                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> <span data-i18n="nav_perfil">Perfil</span></a>
+                    <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> <span data-i18n="nav_ranking">Ranking</span></a>
                 </nav>
             </div>
 
@@ -40,9 +44,9 @@
             <div class="col-lg-10 main-content">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="fw-bold mb-0"><i class="bi bi-bullseye"></i> Mis Metas de Ahorro</h4>
+                    <h4 class="fw-bold mb-0"><i class="bi bi-bullseye"></i> <span data-i18n="metas_titulo">Mis Metas de Ahorro</span></h4>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMeta">
-                        <i class="bi bi-plus-lg"></i> Nueva Meta
+                        <i class="bi bi-plus-lg"></i> <span data-i18n="metas_nueva">Nueva Meta</span>
                     </button>
                 </div>
 
@@ -62,36 +66,36 @@
         <div class="modal-dialog">
             <div class="modal-content rounded-4">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold">Nueva Meta</h5>
+                    <h5 class="modal-title fw-bold" data-i18n="metas_modal_titulo">Nueva Meta</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body px-4">
                     <div id="alertaMeta" class="alert alert-danger d-none"></div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Nombre de la meta</label>
+                        <label class="form-label fw-semibold" data-i18n="metas_form_nombre">Nombre de la meta</label>
                         <input type="text" id="metaNombre" class="form-control" placeholder="Ej: Mi Moto">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Emoji</label>
+                        <label class="form-label fw-semibold" data-i18n="metas_form_emoji">Emoji</label>
                         <input type="text" id="metaEmoji" class="form-control" placeholder="🏍️">
-                        <small class="text-muted">Copia un emoji que represente tu meta</small>
+                        <small class="text-muted" data-i18n="metas_form_emoji_help">Copia un emoji que represente tu meta</small>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Precio objetivo</label>
+                        <label class="form-label fw-semibold" data-i18n="metas_form_precio">Precio objetivo</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
                             <input type="number" id="metaPrecio" class="form-control" placeholder="5000000">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Fecha limite (opcional)</label>
+                        <label class="form-label fw-semibold" data-i18n="metas_form_fecha">Fecha limite (opcional)</label>
                         <input type="date" id="metaFecha" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="guardarMeta()">Crear Meta</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="metas_cancelar">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarMeta()" data-i18n="metas_crear">Crear Meta</button>
                 </div>
             </div>
         </div>
@@ -102,7 +106,7 @@
         <div class="modal-dialog">
             <div class="modal-content rounded-4">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold">Abonar a Meta</h5>
+                    <h5 class="modal-title fw-bold" data-i18n="metas_abonar_titulo">Abonar a Meta</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body px-4">
@@ -110,21 +114,21 @@
                     <p class="text-muted" id="abonoMetaNombre"></p>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Monto a abonar</label>
+                        <label class="form-label fw-semibold" data-i18n="metas_abono_monto">Monto a abonar</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
                             <input type="number" id="abonoMonto" class="form-control" placeholder="50000">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Descripcion</label>
+                        <label class="form-label fw-semibold" data-i18n="metas_abono_desc">Descripcion</label>
                         <input type="text" id="abonoDescripcion" class="form-control" placeholder="Ahorro semana 1">
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="metas_cancelar">Cancelar</button>
                     <button type="button" class="btn btn-success" onclick="guardarAbono()">
-                        <i class="bi bi-piggy-bank"></i> Abonar
+                        <i class="bi bi-piggy-bank"></i> <span data-i18n="metas_abonar_boton">Abonar</span>
                     </button>
                 </div>
             </div>
@@ -135,22 +139,34 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
+    <script src="i18n.js"></script>
     <script>
         verificarSesion();
         $('#nombreUsuario').html('<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre'));
 
-        // Carga y muestra las metas del usuario (peticion con jQuery)
         async function cargarMetas() {
             const usuarioId = getUsuarioId();
             const metas = await apiAjax('GET', `/api/metas/usuario/${usuarioId}`);
             const contenedor = $('#contenedorMetas');
 
+            // Textos que dependen del idioma
+            const t = {
+                sinMetas: getIdioma() === 'en' ? "You don't have goals yet" : 'No tienes metas todavia',
+                crearPrimera: getIdioma() === 'en' ? 'Create your first savings goal' : 'Crea tu primera meta de ahorro',
+                progreso: getIdioma() === 'en' ? 'Progress' : 'Progreso',
+                ahorrado: getIdioma() === 'en' ? 'Saved' : 'Ahorrado',
+                objetivo: getIdioma() === 'en' ? 'Target' : 'Objetivo',
+                falta: getIdioma() === 'en' ? 'Remaining' : 'Te falta',
+                fechaLimite: getIdioma() === 'en' ? 'Deadline' : 'Fecha limite',
+                abonar: getIdioma() === 'en' ? 'Add Funds' : 'Abonar'
+            };
+
             if (metas.length === 0) {
                 contenedor.html(`
                     <div class="col-12 text-center py-5">
                         <div style="font-size:80px">🎯</div>
-                        <h5 class="text-muted mt-3">No tienes metas todavia</h5>
-                        <p class="text-muted">Crea tu primera meta de ahorro</p>
+                        <h5 class="text-muted mt-3">${t.sinMetas}</h5>
+                        <p class="text-muted">${t.crearPrimera}</p>
                     </div>`);
                 return;
             }
@@ -175,7 +191,7 @@
                         </div>
                         <div class="card-body p-4">
                             <div class="d-flex justify-content-between mb-1">
-                                <small class="text-muted">Progreso</small>
+                                <small class="text-muted">${t.progreso}</small>
                                 <small class="fw-bold">${porcentaje.toFixed(1)}%</small>
                             </div>
                             <div class="progress mb-3">
@@ -183,20 +199,20 @@
                             </div>
                             <div class="row text-center mb-3">
                                 <div class="col-6">
-                                    <div class="text-muted small">Ahorrado</div>
+                                    <div class="text-muted small">${t.ahorrado}</div>
                                     <div class="fw-bold text-success">${formatearMoney(m.montoAhorrado || 0)}</div>
                                 </div>
                                 <div class="col-6">
-                                    <div class="text-muted small">Objetivo</div>
+                                    <div class="text-muted small">${t.objetivo}</div>
                                     <div class="fw-bold">${formatearMoney(m.precioObjetivo)}</div>
                                 </div>
                             </div>
                             <div class="text-center text-muted small mb-3">
-                                Te falta: <strong class="text-danger">${formatearMoney(falta)}</strong>
+                                ${t.falta}: <strong class="text-danger">${formatearMoney(falta)}</strong>
                             </div>
-                            ${m.fechaLimite ? `<div class="text-center text-muted small mb-3">📅 Fecha limite: ${m.fechaLimite}</div>` : ''}
+                            ${m.fechaLimite ? `<div class="text-center text-muted small mb-3">📅 ${t.fechaLimite}: ${m.fechaLimite}</div>` : ''}
                             <button class="btn btn-success w-100" onclick="abrirAbono(${m.id}, '${m.nombre}')">
-                                <i class="bi bi-piggy-bank"></i> Abonar
+                                <i class="bi bi-piggy-bank"></i> ${t.abonar}
                             </button>
                         </div>
                     </div>
@@ -204,7 +220,6 @@
             }).join(''));
         }
 
-        // Crea una nueva meta (peticion con jQuery)
         async function guardarMeta() {
             const nombre = $('#metaNombre').val();
             const emoji = $('#metaEmoji').val();
@@ -212,7 +227,8 @@
             const fechaLimite = $('#metaFecha').val();
 
             if (!nombre || !precioObjetivo) {
-                mostrarError('alertaMeta', 'Completa los campos obligatorios');
+                const msg = getIdioma() === 'en' ? 'Complete the required fields' : 'Completa los campos obligatorios';
+                mostrarError('alertaMeta', msg);
                 return;
             }
 
@@ -231,18 +247,18 @@
                 bootstrap.Modal.getInstance(document.getElementById('modalMeta')).hide();
                 cargarMetas();
             } catch (e) {
-                mostrarError('alertaMeta', 'Error al crear la meta');
+                const msg = getIdioma() === 'en' ? 'Error creating the goal' : 'Error al crear la meta';
+                mostrarError('alertaMeta', msg);
             }
         }
 
-        // Abre el modal de abono con los datos de la meta
         function abrirAbono(metaId, metaNombre) {
             $('#abonoMetaId').val(metaId);
-            $('#abonoMetaNombre').text('Meta: ' + metaNombre);
+            const prefijo = getIdioma() === 'en' ? 'Goal: ' : 'Meta: ';
+            $('#abonoMetaNombre').text(prefijo + metaNombre);
             new bootstrap.Modal(document.getElementById('modalAbono')).show();
         }
 
-        // Registra un abono a una meta (peticion con jQuery)
         async function guardarAbono() {
             const metaId = $('#abonoMetaId').val();
             const monto = $('#abonoMonto').val();
@@ -264,18 +280,24 @@
                 $('#abonoDescripcion').val('');
                 cargarMetas();
             } catch (e) {
-                alert('Error al registrar el abono');
+                const msg = getIdioma() === 'en' ? 'Error adding funds' : 'Error al registrar el abono';
+                alert(msg);
             }
         }
 
-        // Elimina una meta (peticion con jQuery)
         async function eliminarMeta(id) {
-            if (!confirm('Eliminar esta meta?')) return;
+            const confirmMsg = getIdioma() === 'en' ? 'Delete this goal?' : 'Eliminar esta meta?';
+            if (!confirm(confirmMsg)) return;
             await apiAjax('DELETE', `/api/metas/${id}`);
             cargarMetas();
         }
 
         cargarMetas();
+
+        // Vuelve a pintar las metas al cambiar el idioma (para los textos dinamicos)
+        function alCambiarIdioma() {
+            cargarMetas();
+        }
     </script>
 </body>
 </html>

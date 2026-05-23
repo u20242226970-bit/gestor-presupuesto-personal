@@ -15,9 +15,13 @@
     <nav class="navbar navbar-dark navbar-custom px-4">
         <span class="navbar-brand fw-bold fs-4"><i class="bi bi-piggy-bank-fill"></i> FinanceRank</span>
         <div class="d-flex align-items-center gap-3">
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-light" data-idioma="es" onclick="cambiarIdioma('es')">ES</button>
+                <button class="btn btn-outline-light" data-idioma="en" onclick="cambiarIdioma('en')">EN</button>
+            </div>
             <span class="text-white" id="nombreUsuario"></span>
             <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-box-arrow-right"></i> Salir
+                <i class="bi bi-box-arrow-right"></i> <span data-i18n="nav_salir">Salir</span>
             </button>
         </div>
     </nav>
@@ -28,18 +32,18 @@
             <!-- SIDEBAR -->
             <div class="col-lg-2 sidebar">
                 <nav class="nav flex-column">
-                    <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                    <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> Gastos</a>
-                    <a class="nav-link" href="metas.html"><i class="bi bi-bullseye"></i> Metas</a>
-                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> Perfil</a>
-                    <a class="nav-link active" href="leaderboard.html"><i class="bi bi-trophy"></i> Ranking</a>
+                    <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> <span data-i18n="nav_dashboard">Dashboard</span></a>
+                    <a class="nav-link" href="gastos.html"><i class="bi bi-wallet2"></i> <span data-i18n="nav_gastos">Gastos</span></a>
+                    <a class="nav-link" href="metas.html"><i class="bi bi-bullseye"></i> <span data-i18n="nav_metas">Metas</span></a>
+                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> <span data-i18n="nav_perfil">Perfil</span></a>
+                    <a class="nav-link active" href="leaderboard.html"><i class="bi bi-trophy"></i> <span data-i18n="nav_ranking">Ranking</span></a>
                 </nav>
             </div>
 
             <!-- CONTENIDO -->
             <div class="col-lg-10 main-content">
-                <h4 class="fw-bold mb-1"><i class="bi bi-trophy-fill"></i> Ranking de Ahorradores</h4>
-                <p class="text-muted mb-4">Clasificacion segun el porcentaje de ingreso ahorrado</p>
+                <h4 class="fw-bold mb-1"><i class="bi bi-trophy-fill"></i> <span data-i18n="rank_titulo">Ranking de Ahorradores</span></h4>
+                <p class="text-muted mb-4" data-i18n="rank_subtitulo">Clasificacion segun el porcentaje de ingreso ahorrado</p>
 
                 <!-- PODIO TOP 3 -->
                 <div id="podio" class="row g-3 mb-4 justify-content-center"></div>
@@ -47,16 +51,16 @@
                 <!-- TABLA COMPLETA -->
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
-                        <h5 class="fw-bold mb-3">Tabla de posiciones</h5>
+                        <h5 class="fw-bold mb-3" data-i18n="rank_tabla_titulo">Tabla de posiciones</h5>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle">
                                 <thead class="table-dark">
                                     <tr>
                                         <th class="text-center">#</th>
-                                        <th>Rango</th>
-                                        <th>Nombre</th>
-                                        <th>Usuario</th>
-                                        <th class="text-end">% Ahorro</th>
+                                        <th data-i18n="rank_th_rango">Rango</th>
+                                        <th data-i18n="rank_th_nombre">Nombre</th>
+                                        <th data-i18n="rank_th_usuario">Usuario</th>
+                                        <th class="text-end" data-i18n="rank_th_porcentaje">% Ahorro</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tablaRanking">
@@ -75,19 +79,18 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
+    <script src="i18n.js"></script>
     <script>
         verificarSesion();
 
         const MEDALLAS = ['🥇', '🥈', '🥉'];
+        let usuariosCache = [];
 
-        // Carga y ordena el ranking de usuarios (peticion con jQuery)
         async function cargarRanking() {
             $('#nombreUsuario').html('<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre'));
-            const miId = String(getUsuarioId());
 
             let usuarios = await apiAjax('GET', '/api/usuarios');
 
-            // Calcular porcentaje y rango de cada usuario
             usuarios = usuarios.map(u => {
                 const ingreso = u.ingresoMensual || 0;
                 const ahorro = u.ahorroMensual || 0;
@@ -95,8 +98,15 @@
                 return { ...u, porcentaje, rango: calcularRango(ingreso, ahorro) };
             });
 
-            // Ordenar de mayor a menor porcentaje
             usuarios.sort((a, b) => b.porcentaje - a.porcentaje);
+            usuariosCache = usuarios;
+            pintarRanking();
+        }
+
+        // Pinta el podio y la tabla en el idioma actual
+        function pintarRanking() {
+            const miId = String(getUsuarioId());
+            const usuarios = usuariosCache;
 
             // ===== PODIO (solo si hay 3 o mas) =====
             const podio = $('#podio');
@@ -120,19 +130,23 @@
             // ===== TABLA =====
             const tabla = $('#tablaRanking');
             if (usuarios.length === 0) {
-                tabla.html('<tr><td colspan="5" class="text-center text-muted py-3">No hay usuarios registrados</td></tr>');
+                const msg = getIdioma() === 'en' ? 'No registered users' : 'No hay usuarios registrados';
+                tabla.html(`<tr><td colspan="5" class="text-center text-muted py-3">${msg}</td></tr>`);
                 return;
             }
+
+            const etiquetaYoTexto = getIdioma() === 'en' ? 'You' : 'Tú';
 
             tabla.html(usuarios.map((u, idx) => {
                 const pos = idx + 1;
                 const posHtml = pos <= 3 ? MEDALLAS[pos - 1] : `<span class="fw-bold text-muted">${pos}</span>`;
                 const esYo = String(u.id) === miId;
-                const etiquetaYo = esYo ? ' <span class="badge bg-info">Tú</span>' : '';
+                const etiquetaYo = esYo ? ` <span class="badge bg-info">${etiquetaYoTexto}</span>` : '';
+                const nombreRango = traducirRango(u.rango.clase);
                 return `
                     <tr class="${esYo ? 'table-primary' : ''}">
                         <td class="text-center fs-5">${posHtml}</td>
-                        <td>${u.rango.emoji} <span class="fw-semibold">${u.rango.nombre}</span></td>
+                        <td>${u.rango.emoji} <span class="fw-semibold">${nombreRango}</span></td>
                         <td class="fw-semibold">${u.nombre}${etiquetaYo}</td>
                         <td class="text-muted">@${u.username}</td>
                         <td class="text-end fw-bold text-success">${u.porcentaje.toFixed(1)}%</td>
@@ -141,6 +155,11 @@
         }
 
         cargarRanking();
+
+        // Vuelve a pintar el ranking al cambiar el idioma (para los rangos)
+        function alCambiarIdioma() {
+            pintarRanking();
+        }
     </script>
 </body>
 </html>

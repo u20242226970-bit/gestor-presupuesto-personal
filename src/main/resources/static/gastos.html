@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FinanceRank - Gastos</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
 </head>
 <body>
 
@@ -15,9 +15,13 @@
     <nav class="navbar navbar-dark navbar-custom px-4">
         <span class="navbar-brand fw-bold fs-4"><i class="bi bi-piggy-bank-fill"></i> FinanceRank</span>
         <div class="d-flex align-items-center gap-3">
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-light" data-idioma="es" onclick="cambiarIdioma('es')">ES</button>
+                <button class="btn btn-outline-light" data-idioma="en" onclick="cambiarIdioma('en')">EN</button>
+            </div>
             <span class="text-white" id="nombreUsuario"></span>
             <button onclick="cerrarSesion()" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-box-arrow-right"></i> Salir
+                <i class="bi bi-box-arrow-right"></i> <span data-i18n="nav_salir">Salir</span>
             </button>
         </div>
     </nav>
@@ -28,11 +32,11 @@
             <!-- SIDEBAR -->
             <div class="col-lg-2 sidebar">
                 <nav class="nav flex-column">
-                    <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                    <a class="nav-link active" href="gastos.html"><i class="bi bi-wallet2"></i> Gastos</a>
-                    <a class="nav-link" href="metas.html"><i class="bi bi-bullseye"></i> Metas</a>
-                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> Perfil</a>
-                    <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> Ranking</a>
+                    <a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> <span data-i18n="nav_dashboard">Dashboard</span></a>
+                    <a class="nav-link active" href="gastos.html"><i class="bi bi-wallet2"></i> <span data-i18n="nav_gastos">Gastos</span></a>
+                    <a class="nav-link" href="metas.html"><i class="bi bi-bullseye"></i> <span data-i18n="nav_metas">Metas</span></a>
+                    <a class="nav-link" href="perfil.html"><i class="bi bi-person-circle"></i> <span data-i18n="nav_perfil">Perfil</span></a>
+                    <a class="nav-link" href="leaderboard.html"><i class="bi bi-trophy"></i> <span data-i18n="nav_ranking">Ranking</span></a>
                 </nav>
             </div>
 
@@ -40,9 +44,9 @@
             <div class="col-lg-10 main-content">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="fw-bold mb-0"><i class="bi bi-wallet2"></i> Mis Gastos</h4>
+                    <h4 class="fw-bold mb-0"><i class="bi bi-wallet2"></i> <span data-i18n="gastos_titulo">Mis Gastos</span></h4>
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGasto">
-                        <i class="bi bi-plus-lg"></i> Nuevo Gasto
+                        <i class="bi bi-plus-lg"></i> <span data-i18n="gastos_nuevo">Nuevo Gasto</span>
                     </button>
                 </div>
 
@@ -50,19 +54,19 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
                         <div class="stat-card orange">
-                            <div class="fs-6 opacity-75">Total Gastado</div>
+                            <div class="fs-6 opacity-75" data-i18n="gastos_total">Total Gastado</div>
                             <div class="fs-3 fw-bold" id="totalGastado">$0</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="stat-card blue">
-                            <div class="fs-6 opacity-75">Numero de Gastos</div>
+                            <div class="fs-6 opacity-75" data-i18n="gastos_numero">Numero de Gastos</div>
                             <div class="fs-3 fw-bold" id="numGastos">0</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="stat-card green">
-                            <div class="fs-6 opacity-75">Promedio por Gasto</div>
+                            <div class="fs-6 opacity-75" data-i18n="gastos_promedio">Promedio por Gasto</div>
                             <div class="fs-3 fw-bold" id="promedioGasto">$0</div>
                         </div>
                     </div>
@@ -76,11 +80,11 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th>#</th>
-                                        <th>Descripcion</th>
-                                        <th>Categoria</th>
-                                        <th>Monto</th>
-                                        <th>Fecha</th>
-                                        <th>Acciones</th>
+                                        <th data-i18n="gastos_th_desc">Descripcion</th>
+                                        <th data-i18n="gastos_th_cat">Categoria</th>
+                                        <th data-i18n="gastos_th_monto">Monto</th>
+                                        <th data-i18n="gastos_th_fecha">Fecha</th>
+                                        <th data-i18n="gastos_th_acciones">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tablaGastos">
@@ -104,7 +108,7 @@
         <div class="modal-dialog">
             <div class="modal-content rounded-4">
                 <div class="modal-header border-0">
-                    <h5 class="modal-title fw-bold" id="modalTitulo">Nuevo Gasto</h5>
+                    <h5 class="modal-title fw-bold" id="modalTitulo" data-i18n="gastos_modal_titulo">Nuevo Gasto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body px-4">
@@ -112,47 +116,46 @@
                     <div id="alertaGasto" class="alert alert-danger d-none"></div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Descripcion</label>
+                        <label class="form-label fw-semibold" data-i18n="gastos_form_desc">Descripcion</label>
                         <input type="text" id="gastoDescripcion" class="form-control" placeholder="Ej: Almuerzo restaurante">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Monto</label>
+                        <label class="form-label fw-semibold" data-i18n="gastos_form_monto">Monto</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
                             <input type="number" id="gastoMonto" class="form-control" placeholder="15000">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Categoria</label>
+                        <label class="form-label fw-semibold" data-i18n="gastos_form_cat">Categoria</label>
                         <select id="gastoCategoria" class="form-select">
-                            <option value="">Selecciona una categoria</option>
+                            <option value="" data-i18n="gastos_form_cat_select">Selecciona una categoria</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Fecha</label>
+                        <label class="form-label fw-semibold" data-i18n="gastos_form_fecha">Fecha</label>
                         <input type="date" id="gastoFecha" class="form-control">
                     </div>
                 </div>
                 <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="guardarGasto()">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="gastos_cancelar">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarGasto()" data-i18n="gastos_guardar">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- jQuery (debe ir ANTES de app.js) -->
+    <!-- jQuery (antes de app.js) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
+    <script src="i18n.js"></script>
     <script>
         verificarSesion();
         $('#nombreUsuario').html('<i class="bi bi-person-circle"></i> ' + localStorage.getItem('usuarioNombre'));
 
-        // Fecha de hoy por defecto
         document.getElementById('gastoFecha').valueAsDate = new Date();
 
-        // Carga las categorias en el select (peticion con jQuery)
         async function cargarCategorias() {
             const categorias = await apiAjax('GET', '/api/categorias');
             const select = $('#gastoCategoria');
@@ -161,7 +164,6 @@
             });
         }
 
-        // Carga y muestra los gastos del usuario (peticion con jQuery)
         async function cargarGastos() {
             const usuarioId = getUsuarioId();
             const gastos = await apiAjax('GET', `/api/gastos/usuario/${usuarioId}`);
@@ -173,7 +175,8 @@
 
             const tabla = $('#tablaGastos');
             if (gastos.length === 0) {
-                tabla.html('<tr><td colspan="6" class="text-center text-muted py-4">No tienes gastos registrados</td></tr>');
+                const msg = getIdioma() === 'en' ? 'No expenses registered' : 'No tienes gastos registrados';
+                tabla.html(`<tr><td colspan="6" class="text-center text-muted py-4">${msg}</td></tr>`);
                 return;
             }
 
@@ -181,7 +184,7 @@
                 <tr>
                     <td>${i + 1}</td>
                     <td>${g.descripcion}</td>
-                    <td><span class="badge bg-primary">${g.categoria ? g.categoria.nombre : 'Sin categoria'}</span></td>
+                    <td><span class="badge bg-primary">${g.categoria ? traducirCategoria(g.categoria.nombre) : traducirCategoria('Sin categoria')}</span></td>
                     <td class="fw-bold text-danger">${formatearMoney(g.monto)}</td>
                     <td>${g.fecha || '-'}</td>
                     <td>
@@ -196,7 +199,6 @@
             `).join(''));
         }
 
-        // Guarda un gasto nuevo o edita uno existente (peticion con jQuery)
         async function guardarGasto() {
             const id = $('#gastoId').val();
             const descripcion = $('#gastoDescripcion').val();
@@ -205,7 +207,8 @@
             const fecha = $('#gastoFecha').val();
 
             if (!descripcion || !monto || !fecha) {
-                mostrarError('alertaGasto', 'Completa todos los campos');
+                const msg = getIdioma() === 'en' ? 'Complete all fields' : 'Completa todos los campos';
+                mostrarError('alertaGasto', msg);
                 return;
             }
 
@@ -227,13 +230,14 @@
                 limpiarModal();
                 cargarGastos();
             } catch (e) {
-                mostrarError('alertaGasto', 'Error al guardar el gasto');
+                const msg = getIdioma() === 'en' ? 'Error saving the expense' : 'Error al guardar el gasto';
+                mostrarError('alertaGasto', msg);
             }
         }
 
-        // Rellena el modal con los datos de un gasto para editarlo
         function editarGasto(id, descripcion, monto, categoriaId, fecha) {
-            $('#modalTitulo').text('Editar Gasto');
+            const titulo = getIdioma() === 'en' ? 'Edit Expense' : 'Editar Gasto';
+            $('#modalTitulo').text(titulo);
             $('#gastoId').val(id);
             $('#gastoDescripcion').val(descripcion);
             $('#gastoMonto').val(monto);
@@ -242,9 +246,9 @@
             new bootstrap.Modal(document.getElementById('modalGasto')).show();
         }
 
-        // Elimina un gasto (peticion con jQuery)
         async function eliminarGasto(id) {
-            if (!confirm('Eliminar este gasto?')) return;
+            const confirmMsg = getIdioma() === 'en' ? 'Delete this expense?' : 'Eliminar este gasto?';
+            if (!confirm(confirmMsg)) return;
             await apiAjax('DELETE', `/api/gastos/${id}`);
             cargarGastos();
         }
@@ -254,11 +258,16 @@
             $('#gastoDescripcion').val('');
             $('#gastoMonto').val('');
             document.getElementById('gastoFecha').valueAsDate = new Date();
-            $('#modalTitulo').text('Nuevo Gasto');
+            const titulo = getIdioma() === 'en' ? 'New Expense' : 'Nuevo Gasto';
+            $('#modalTitulo').text(titulo);
         }
 
         cargarCategorias();
         cargarGastos();
+        
+        function alCambiarIdioma() {
+            cargarGastos();
+        }
     </script>
 </body>
 </html>
